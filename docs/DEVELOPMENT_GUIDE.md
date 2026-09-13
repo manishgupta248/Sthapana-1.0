@@ -1,6 +1,10 @@
 ## Git
 ### Phase - 0
+> git add .
+> git status
 
+> git commit -m "Phase 0: Foundation - Django skeleton, custom user model, auth pages, logging, backups, tests"
+> git tag v0.0
 
 
 

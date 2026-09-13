@@ -18,28 +18,13 @@
 | 12 | Interactive Login/Logout/Registration pages and a dashboard shell are built in Phase 0 (foundation), not deferred | Owner wants early, visible progress and a real (non-admin-panel) look and feel from the start |
 | 13 | Backup system infrastructure built in Phase 0; actively exercised/validated starting Phase 1 | Protects data from the first real record entered, without waiting for a later phase |
 | 14 | Project folder/repo name: **Sthapana**, located at `D:\Sthapana\` | Owner's choice — Sanskrit for "establishment/founding," short and fitting |
+| 15 | Single-user access for now (role structure still built for future flexibility) | Owner is currently the only user; LAN/multi-user deployment deferred until actually needed |
+| 16 | Registration page built as Option A: public form exists, but new accounts start inactive (`is_active=False`) until an Admin manually activates them via /admin/ | Matches admin-approved requirement for HR-sensitive data while still having a working, tested registration flow ready for when a second user is added |
+| 17 | Python 3.13.3 used instead of the originally planned 3.12 | Owner's informed choice; Django's current LTS supports 3.13, avoiding an unnecessary second Python install |
+| 18 | Login by username, not email | Owner's choice — simplest, matches Django's default behavior |
 
 ## Open questions (need owner's explicit decision)
 
-### OQ-1: Single-user or multi-user access?
-Will only you use this system, or will other Establishment Branch staff
-need their own logins (e.g., accessing it over the office LAN)?
-- **If single-user:** Phase 0/1 can be simpler — one admin account is
-  enough for now, though we'd still build the role structure for future
-  flexibility.
-- **If multi-user:** Login, roles, and permissions become load-bearing
-  from day one, and we should discuss whether the PC hosting this will be
-  reliably reachable by others on the office network.
-- **Status:** Not yet decided. Blocks finalizing Phase 0 details.
-
-### OQ-5: Open self-registration vs admin-created/approved accounts?
-The Registration page could let anyone create an account (open
-self-signup), or require an Admin to create the account / approve a
-request first.
-- **Recommendation:** admin-created or admin-approved, since this system
-  holds staff HR data and open signup would let anyone on the network
-  create a login.
-- **Status:** Not yet confirmed — decide at Phase 0 kickoff.
 
 ### OQ-2: Where does the Telegram bot's authorized user list come from?
 Should Telegram chat-ID-to-user mapping be manually configured by you, or

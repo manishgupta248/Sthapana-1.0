@@ -5,22 +5,22 @@ a phase only when PROGRESS.md and CURRENT_STATUS.md both confirm it's
 done, including a passed owner smoke test.
 
 ## Phase 0 — Foundation & Environment
-- [ ] Git repo initialized, `.gitignore` in place
-- [ ] Python virtual environment set up on Windows/PowerShell
-- [ ] Django project skeleton (`config/`) created
-- [ ] Settings split: `base.py` / `development.py` / `production.py`
-- [ ] `.env` + `django-environ` wired up; `.env.example` committed
-- [ ] Custom user model app (`apps/accounts`) created *before first migration*
-- [ ] Logging with rotation configured
-- [ ] Custom exception-handling scaffold
+- [x] Git repo initialized, `.gitignore` in place
+- [x] Python virtual environment set up on Windows/PowerShell
+- [x] Django project skeleton (`config/`) created
+- [x] Settings split: `base.py` / `development.py` / `production.py`
+- [x] `.env` + `django-environ` wired up; `.env.example` committed
+- [x] Custom user model app (`apps/accounts`) created *before first migration*
+- [x] Logging with rotation configured
+- [x] Custom exception-handling scaffold
 - [ ] Root `templates/base.html` layout + `static/` + `media/` folders configured
-- [ ] Custom-styled Login / Logout / Registration pages (using custom user model)
-- [ ] Dashboard shell template (empty summary cards, ready for Phase 1 data)
-- [ ] Backup system infrastructure: scheduled SQLite copy script + pruning
+- [x] Custom-styled Login / Logout / Registration pages (using custom user model)
+- [x] Dashboard shell template (empty summary cards, ready for Phase 1 data)
+- [x] Backup system infrastructure: scheduled SQLite copy script + pruning
       (exercised for real starting Phase 1, once data exists)
-- [ ] Minimal smoke-test app to confirm server runs, admin login works
-- [ ] **Decision needed:** single-user vs multi-user/LAN access (see DECISIONS.md)
-- [ ] **Decision needed:** open self-registration vs admin-created/approved accounts (see DECISIONS.md)
+- [x] Minimal smoke-test app to confirm server runs, admin login works
+- [x] Decision made: single-user access (see DECISIONS.md #15)
+- [x] Decision made: admin-approved registration, Option A — accounts start inactive (see DECISIONS.md #16)
 
 ## Phase 1 — Faculty & Staff Data (`apps/people`) — first "early gain"
 - [ ] Finalize Core + Extension field grouping (see ARCHITECTURE.md) with owner
