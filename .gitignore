@@ -1,0 +1,26 @@
+# Virtual environment
+venv/
+
+# Secrets - never commit these
+.env
+
+# Python cache files
+__pycache__/
+*.pyc
+
+# Database file
+*.sqlite3
+
+# Backups and logs (these live locally, not in git)
+backups/
+logs/
+
+# Media uploads (user-uploaded files, not source code)
+media/
+
+# VS Code settings (personal editor preferences)
+.vscode/
+
+# OS-generated files
+Thumbs.db
+.DS_Store

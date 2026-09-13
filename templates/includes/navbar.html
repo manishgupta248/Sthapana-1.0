@@ -1,0 +1,17 @@
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'dashboard' %}">Sthapana</a>
+    <div class="d-flex ms-auto align-items-center">
+      {% if user.is_authenticated %}
+        <span class="navbar-text me-3">Signed in as {{ user.username }}</span>
+        <form method="post" action="{% url 'logout' %}" class="d-inline">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-outline-light btn-sm">Log out</button>
+        </form>
+      {% else %}
+        <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm me-2">Log in</a>
+        <a href="{% url 'register' %}" class="btn btn-light btn-sm">Request account</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>

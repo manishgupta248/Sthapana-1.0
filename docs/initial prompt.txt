@@ -1,0 +1,87 @@
+Project name: Sthapana — a data & reporting system for the Establishment
+Branch of my University. Project folder: D:\Sthapana\
+
+I'm building this for: Faculty and Staff data, office file records
+(notices & circulars), tasks/reminders, and meeting notes/records. I am
+a non-programmer.
+
+My PC: 16 GB RAM, i5, Windows. Dev tools: PowerShell + VS Code.
+
+Tech stack: Python, Django + Django REST Framework, Django Templates
+with local Bootstrap + Alpine.js for now, Git for version control,
+SQLite (with a real, tested backup system) with a possible future move
+to PostgreSQL, a custom Django user model, custom exceptions, rotating
+logging, and environment-variable-based secrets — all built as the
+foundation, not added later. Settings split into base/development/
+production from day one.
+
+All templates share one common layout at the templates root; static and
+media folders are handled at the project root. Each feature lives in its
+own Django app.
+
+Early-gain requirements (important — not the default "admin-only" MVP
+approach):
+- Login/Logout/Registration pages must be interactive, custom-styled
+  pages (not just the Django admin login) — built as part of the
+  foundation phase.
+- A dashboard shell (with the common layout and placeholder summary
+  cards) is also built in the foundation phase.
+- Faculty/Staff data (Phase 1) must be modeled as Core fields (stable,
+  unlikely to change) + Extension tables (grouped optional fields), so
+  new fields can be added later with minimal risk of breaking existing
+  screens or reports.
+- Faculty/Staff data entry must support BOTH a web form and an Excel
+  (.xlsx) import, from Phase 1 onward, sharing the same validation logic
+  so data quality is consistent regardless of entry channel.
+- The backup system's infrastructure (scheduled copy + pruning script)
+  is built in the foundation phase, so it's protecting data from the
+  very first real record — its restore process is tested for real once
+  Phase 1 has actual data.
+
+Later phases (not now) will add: a Telegram bot (deterministic commands
+first), an Intent Router (rule-based + fuzzy matching) to handle
+human-like commands, an AI/LLM layer, and Tools apps for Filesystem,
+Excel, Word, PDF, and Google (Gmail, Drive, Calendar, Sheets). The
+system must always work deterministically first — the AI layer is a
+convenience layered on top later, never a replacement.
+
+I have a full planning document set prepared: AGENT.md, ARCHITECTURE.md,
+TODO.md, PROGRESS.md, CURRENT_STATUS.md, DECISIONS.md, and GLOSSARY.md
+(attached below). Please treat AGENT.md as your binding working rules
+for this entire project, and ARCHITECTURE.md + TODO.md as the agreed
+technical plan and phase roadmap.
+
+Development rules (non-negotiable, from AGENT.md):
+1. Discuss objectives, options, and implications of each phase/step, and
+   get my explicit approval before starting development on it.
+2. I am non-technical — always use plain English, explain technical terms
+   simply.
+3. Give one complete phase/step at a time. Clearly separate: (a)
+   PowerShell commands I will run myself, and (b) file code I will
+   create/paste myself — with exact file paths.
+4. At the end of each major step/phase, give me a smoke test to confirm
+   it worked.
+5. Update git and project documentation only at major step/phase
+   completion — not after every small change.
+6. Apply best practices throughout: proper .gitignore so secrets never
+   reach git, split settings from day one, minimal automated tests per
+   app before calling a phase done, one git branch per phase merged only
+   after my smoke test passes, and no phase mixes in concerns from a
+   later phase.
+7. Before starting any new phase, briefly restate what it will and will
+   not include, and its implications, before giving commands/code.
+
+Please start by:
+1. Reading CURRENT_STATUS.md (attached) to confirm we are starting fresh
+   at Phase 0.
+2. Confirming you understand and will follow AGENT.md as your operating
+   rules for this entire project.
+3. Asking me the two open decisions from DECISIONS.md that affect Phase 0
+   scope: (a) single-user vs multi-user/LAN access, and (b) open
+   self-registration vs admin-created/approved accounts.
+4. Then presenting the Phase 0 plan (objectives, options, implications)
+   per rule 1, and waiting for my approval before giving any commands or
+   code.
+
+[Attach or paste: AGENT.md, ARCHITECTURE.md, TODO.md, PROGRESS.md,
+CURRENT_STATUS.md, DECISIONS.md, GLOSSARY.md]
