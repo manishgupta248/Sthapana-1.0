@@ -30,6 +30,7 @@
 | 23 | Audit trail (who changed what, when) implemented via the ready-made `django-simple-history` tool, not a custom-built logger | Well-tested, works automatically once added to a model, less custom code to maintain long-term |
 | 24 | Employee deletion restricted to the Admin role only; even an Admin's deletion is captured in the audit trail | Matches the security requirement for HR-sensitive data while preserving accountability for every deletion |
 
+| 25 | Phase 1 Steps 1.3–1.9 paused at owner's request on 2026-09-14; owner will implement remaining detail tables independently | Owner's own timeline and requirements take priority; roadmap resumes only when owner reopens it |
 ## Open questions (need owner's explicit decision)
 
 

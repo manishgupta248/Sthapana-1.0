@@ -35,10 +35,23 @@ done, including a passed owner smoke test.
 - [x] Dashboard populated with real Faculty/Staff count
 - [x] Minimal automated tests (4 tests, passing)
 
-### Step 1.2 — Contact Details (not started)
-- [ ] Contact Details extension table (phone, personal email, official email, addresses)
-- [ ] Linked to Employee; own web form; entry point from Employee detail page
-- [ ] Minimal automated tests
+### Step 1.2 — Contact Details — COMPLETE
+- [x] ContactDetails extension table (one-to-one with Employee)
+- [x] Web form (add/edit/delete), linked from Employee detail page
+- [x] "Same as current address" convenience checkbox
+- [x] Django admin registration
+- [x] Excel import, matched by Employee ID
+- [x] Minimal automated tests
+
+### Steps 1.3–1.9 — ON HOLD (paused at owner's request, 2026-09-14)
+Owner will implement Personal Information, Qualifications, Employment
+Details, Salary History, Promotion History, Leave Records, and the
+tabbed employee detail page independently. Resume only when the owner
+explicitly reopens this part of the roadmap.
+
+### Additional Enhancements (owner-requested, outside the numbered roadmap)
+- [ ] Bulk Excel import for Department and Designation lookup lists,
+      accessible from the Django admin panel
 
 ### Step 1.3 — Personal Information (not started)
 - [ ] PAN, Aadhar, Date of Birth, Bank details — Admin-only, masked by default with logged reveals

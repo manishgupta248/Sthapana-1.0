@@ -75,3 +75,22 @@ entries at the top.
 - Git tag: none (tags are reserved for full phase completion, not
   individual sub-steps — see Phase 0's v0.0 for comparison)
 - Notes/deviations from original plan: none
+
+### Phase 1 — Step 1.2: Contact Details — COMPLETED 2026-09-14
+- Branch: phase-1-step-1-2-contact-details, merged to main on 2026-09-14
+- What was built: ContactDetails table (one-to-one with Employee) covering
+  mobile numbers, personal/official email, current & permanent address,
+  and emergency contact details; "same as current address" convenience
+  checkbox on the web form; web form linked from the Employee detail page
+  (Add/Edit/Delete, delete restricted to Admin); Django admin
+  registration with change history; Excel importer matching by Employee
+  ID, updating an existing record rather than duplicating it.
+- Smoke test performed: Owner added contact details via the web form,
+  confirmed the address checkbox worked, edited an existing record,
+  ran an Excel import twice on the same employee to confirm update-not-
+  duplicate behaviour, confirmed an unknown Employee ID was reported as
+  skipped, confirmed a Clerk-role test user could add/edit but not
+  delete. — Result: PASS
+- Automated tests: 2 new tests (apps/people), all passing (6 total)
+- Git tag: none (tags reserved for full phase completion)
+- Notes/deviations from original plan: none
