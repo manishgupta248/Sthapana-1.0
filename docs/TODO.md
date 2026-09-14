@@ -23,16 +23,51 @@ done, including a passed owner smoke test.
 - [x] Decision made: admin-approved registration, Option A — accounts start inactive (see DECISIONS.md #16)
 
 ## Phase 1 — Faculty & Staff Data (`apps/people`) — first "early gain"
-- [ ] Finalize Core + Extension field grouping (see ARCHITECTURE.md) with owner
-- [ ] Department / Designation / Person Core model + Extension model(s)
-- [ ] Role-based permissions (Admin / EstablishmentOfficer / Clerk / ReadOnly)
-- [ ] Sensitive-field restriction (e.g., salary visible only to Admin)
-- [ ] Audit trail (who changed what, when)
-- [ ] **Owner-tested backup restore drill** (using Phase 0 infrastructure, now with real data)
-- [ ] Full CRUD via custom templates (list/add/edit/view/delete pages, not admin-only)
-- [ ] Excel (.xlsx) import path, sharing the same validation logic as the web form
-- [ ] Dashboard populated with real Faculty/Staff summary numbers
-- [ ] Minimal automated tests (including: web form and Excel import both reject a duplicate employee ID)
+
+### Step 1.1 — Employee Foundation — COMPLETE
+- [x] Department & Designation lookup lists
+- [x] Core Employee model (Employee ID, Full Name, Department, Designation, Status, Date Joined, Employment Type)
+- [x] Audit trail (django-simple-history) built in from the start
+- [x] Role-based permissions (Admin / EstablishmentOfficer / Clerk / ReadOnly)
+- [x] Full web CRUD (list/add/edit/view) — delete restricted to Admin, logged
+- [x] Django admin registration
+- [x] Excel (.xlsx) import for Core fields, sharing web-form validation
+- [x] Dashboard populated with real Faculty/Staff count
+- [x] Minimal automated tests (4 tests, passing)
+
+### Step 1.2 — Contact Details (not started)
+- [ ] Contact Details extension table (phone, personal email, official email, addresses)
+- [ ] Linked to Employee; own web form; entry point from Employee detail page
+- [ ] Minimal automated tests
+
+### Step 1.3 — Personal Information (not started)
+- [ ] PAN, Aadhar, Date of Birth, Bank details — Admin-only, masked by default with logged reveals
+- [ ] Minimal automated tests
+
+### Step 1.4 — Qualifications (not started)
+- [ ] Multiple qualification records per employee (degree, institution, year)
+- [ ] Minimal automated tests
+
+### Step 1.5 — Employment Details (not started)
+- [ ] PF number, pension scheme, probation/confirmation dates
+- [ ] Minimal automated tests
+
+### Step 1.6 — Salary History (not started)
+- [ ] Full pay history (effective date, basic pay, allowances, order reference)
+- [ ] Minimal automated tests
+
+### Step 1.7 — Promotion History (not started)
+- [ ] Promotion events (old/new designation, date, order reference); updates Employee's current designation
+- [ ] Minimal automated tests
+
+### Step 1.8 — Leave Records (not started)
+- [ ] Leave events (type, dates, status, remarks)
+- [ ] Minimal automated tests
+
+### Step 1.9 — Employee Detail Page & Phase 1 Close-out (not started)
+- [ ] Tabbed employee detail page (Alpine.js) tying together all Step 1.2–1.8 tables
+- [ ] Owner-tested backup restore drill, using real data
+- [ ] Full Phase 1 documentation and git close-out
 
 ## Phase 2 — Office Records: Notices & Circulars (`apps/records`)
 - [ ] Inward/Outward register model (diary number, direction, date, subject)

@@ -53,3 +53,25 @@ entries at the top.
   - Phase 0 was built directly on the `main` branch rather than a
     dedicated phase branch, deviating from AGENT.md's branch-per-phase
     rule. No functional impact; corrected starting Phase 1.
+
+### Phase 1 — Step 1.1: Employee Foundation — COMPLETED 2026-09-14
+- Branch: phase-1-step-1-1-employee-foundation, merged to main on 2026-09-14
+- What was built: Department and Designation lookup lists; Core Employee
+  model (Employee ID, Full Name, Department, Designation, Status, Date
+  Joined, Employment Type); full change history via django-simple-history;
+  role-based permissions (Admin/EstablishmentOfficer/Clerk/ReadOnly)
+  enforced via a data migration; custom-styled web CRUD pages (list, add,
+  edit, view — delete restricted to Admin and itself logged in history);
+  Django admin registration for all three models; Excel (.xlsx) importer
+  for Core fields sharing the same validation as the web form, with
+  per-row error reporting; dashboard "Faculty & Staff" card now shows the
+  real employee count.
+- Smoke test performed: Owner created Departments/Designations via admin,
+  added an employee via the web form, confirmed duplicate Employee ID is
+  rejected, ran a small Excel import, confirmed a Clerk-role test user
+  cannot see the Delete button, confirmed dashboard count updates live.
+  — Result: PASS
+- Automated tests: 4 tests (apps/people), all passing
+- Git tag: none (tags are reserved for full phase completion, not
+  individual sub-steps — see Phase 0's v0.0 for comparison)
+- Notes/deviations from original plan: none
