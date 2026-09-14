@@ -1,6 +1,11 @@
+{% load static %}
+
 <nav class="navbar navbar-expand-lg navbar-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'dashboard' %}">Sthapana</a>
+    <a class="navbar-brand d-flex align-items-center" href="{% url 'dashboard' %}">
+      <img src="{% static 'images/Logo.png' %}" alt="Sthapana logo" height="32" class="me-2">
+      Sthapana
+    </a>
     <div class="d-flex ms-auto align-items-center">
       {% if user.is_authenticated %}
         <span class="navbar-text me-3">Signed in as {{ user.username }}</span>

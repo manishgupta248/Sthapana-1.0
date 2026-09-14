@@ -6,23 +6,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}Sthapana{% endblock %}</title>
   <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
-  <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
   <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+  <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
 </head>
 <body>
 
   {% include "includes/navbar.html" %}
 
-  <main class="container mt-4">
-    {% if messages %}
-      {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-      {% endfor %}
+  <div class="app-wrapper">
+    {% if user.is_authenticated %}
+      {% include "includes/sidebar.html" %}
     {% endif %}
 
-    {% block content %}
-    {% endblock %}
-  </main>
+    <main class="main-content">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+
+      {% block content %}
+      {% endblock %}
+    </main>
+     
+  </div>
 
   <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
   <script src="{% static 'vendor/alpine/alpine.min.js' %}" defer></script>

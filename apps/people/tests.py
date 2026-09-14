@@ -7,6 +7,11 @@ from .forms import EmployeeForm
 from .models import Department, Designation, Employee
 from .models import ContactDetails
 
+from io import BytesIO
+
+import openpyxl
+from django.core.files.uploadedfile import SimpleUploadedFile
+
 User = get_user_model()
 
 
@@ -111,3 +116,33 @@ class ContactDetailsTests(TestCase):
                 emergency_contact_name="B", emergency_contact_phone="9222222222",
                 emergency_contact_relation="Friend",
             )
+
+class LookupExcelImportAdminTests(TestCase):
+    def setUp(self):
+        self.superuser = User.objects.create_superuser(
+            username="admin1", password="testpass123", email="admin1@example.com"
+        )
+        Department.objects.create(name="Existing Dept")
+
+    def test_import_creates_new_department_and_skips_existing(self):
+        workbook = openpyxl.Workbook()
+        sheet = workbook.active
+        sheet.append(["Name", "Is Active"])
+        sheet.append(["New Department", "Yes"])
+        sheet.append(["Existing Dept", "Yes"])
+        buffer = BytesIO()
+        workbook.save(buffer)
+        buffer.seek(0)
+
+        uploaded_file = SimpleUploadedFile(
+            "departments.xlsx", buffer.read(),
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+
+        self.client.login(username="admin1", password="testpass123")
+        response = self.client.post(
+            "/admin/people/department/import-excel/", {"excel_file": uploaded_file}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(Department.objects.filter(name="New Department").exists())
+        self.assertEqual(Department.objects.filter(name__iexact="Existing Dept").count(), 1)

@@ -19,6 +19,15 @@
 ### Phase 1.2 
 > git checkout -b phase-1-step-1-2-contact-details
 
+> git add -A
+> git commit -m "Step 1.2: Contact Details (extension table, web form, Excel import)"
+
+> git checkout main
+> git merge phase-1-step-1-2-contact-details
+> git branch -d phase-1-step-1-2-contact-details
+> git add docs/
+> git commit -m "Update docs: Step 1.2 complete, Steps 1.3-1.9 paused at owner's request"
+> git checkout -b feature-lookup-excel-import
 
 
 

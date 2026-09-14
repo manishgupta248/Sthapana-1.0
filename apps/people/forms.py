@@ -70,3 +70,10 @@ class ContactImportForm(forms.Form):
         label="Excel file (.xlsx)",
         widget=forms.ClearableFileInput(attrs={"class": "form-control", "accept": ".xlsx"}),
     )
+
+# ================================================
+class LookupImportForm(forms.Form):
+    excel_file = forms.FileField(
+        label="Excel file (.xlsx)",
+        widget=forms.ClearableFileInput(attrs={"accept": ".xlsx"}),
+    )
