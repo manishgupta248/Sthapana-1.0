@@ -94,3 +94,42 @@ entries at the top.
 - Automated tests: 2 new tests (apps/people), all passing (6 total)
 - Git tag: none (tags reserved for full phase completion)
 - Notes/deviations from original plan: none
+
+### Enhancement — Sidebar, Footer & Logo — COMPLETED 2026-09-14
+- Branch: feature-lookup-excel-import, merged to main on 2026-09-14
+- What was built: Site-wide layout update via base.html — a left-hand
+  sidebar (always visible) with links to Dashboard, Employees, Add
+  Employee, Import Employees, and Django Admin Panel (Admin/staff-only);
+  a footer with the Sthapana logo and copyright line; the logo also
+  added next to "Sthapana" in the top navbar. New static/css/sidebar.css
+  for layout styling. Fixed a pre-existing duplicate Bootstrap CSS
+  <link> in base.html found while making this change.
+- Smoke test performed: Owner checked login page, dashboard, employee
+  list, employee add/edit form, and employee detail page all display
+  correctly with the new layout; confirmed Clerk-role test user does not
+  see the Django Admin Panel link; confirmed narrow-screen view stacks
+  the sidebar instead of squeezing the page; confirmed logo displays
+  correctly in both navbar and footer. — Result: PASS
+- Automated tests: no new tests (template/styling-only change; no logic
+  added)
+- Git tag: none
+- Notes/deviations from original plan: none — this was an owner-
+  requested cosmetic enhancement, not part of the original phase roadmap.
+
+### Enhancement — Admin Excel Import for Department & Designation — COMPLETED 2026-09-14
+- Branch: feature-lookup-excel-import, merged to main on 2026-09-14
+- What was built: An "Import from Excel" button added to the Department
+  and Designation pages inside the Django admin panel. Uses the existing
+  openpyxl library (no new dependency). Excel format: a "Name" column
+  plus an optional "Is Active" (Yes/No) column. Names that already exist
+  (case-insensitive) are skipped and reported rather than duplicated.
+  Shared logic (ExcelImportAdminMixin) reused between both admin pages
+  since the two tables share the same shape.
+- Smoke test performed: Owner uploaded a test file to both the
+  Department and Designation admin import pages, confirmed new entries
+  were created, confirmed re-uploading the same file skipped existing
+  entries instead of duplicating them. — Result: PASS
+- Automated tests: 1 new test (apps/people), all passing (7 total)
+- Git tag: none
+- Notes/deviations from original plan: none — this was an owner-
+  requested enhancement, not part of the original phase roadmap.

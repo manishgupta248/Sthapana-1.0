@@ -50,8 +50,11 @@ tabbed employee detail page independently. Resume only when the owner
 explicitly reopens this part of the roadmap.
 
 ### Additional Enhancements (owner-requested, outside the numbered roadmap)
-- [ ] Bulk Excel import for Department and Designation lookup lists,
+- [x] Bulk Excel import for Department and Designation lookup lists,
       accessible from the Django admin panel
+- [x] Site-wide sidebar (Dashboard/Employees/Add Employee/Import
+      Employees/Admin-only Django Admin link), footer with logo, and
+      logo added to top navbar
 
 ### Step 1.3 — Personal Information (not started)
 - [ ] PAN, Aadhar, Date of Birth, Bank details — Admin-only, masked by default with logged reveals

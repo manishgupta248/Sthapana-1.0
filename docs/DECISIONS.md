@@ -31,6 +31,9 @@
 | 24 | Employee deletion restricted to the Admin role only; even an Admin's deletion is captured in the audit trail | Matches the security requirement for HR-sensitive data while preserving accountability for every deletion |
 
 | 25 | Phase 1 Steps 1.3–1.9 paused at owner's request on 2026-09-14; owner will implement remaining detail tables independently | Owner's own timeline and requirements take priority; roadmap resumes only when owner reopens it |
+| 26 | Department/Designation Excel import built as a lightweight custom admin view using the existing openpyxl library, rather than adding a new package like django-import-export | Avoids an extra dependency for a simple two-column import; matches the pattern already used for Employee/Contact imports |
+| 27 | Sidebar is always visible (not collapsible) | Owner confirmed desktop-only use for now; simpler to build and maintain |
+| 28 | Django Admin Panel link in the sidebar is shown only to Admin/staff-role users | Avoids showing Clerk/ReadOnly/EstablishmentOfficer users a link that would just deny them access |
 ## Open questions (need owner's explicit decision)
 
 
