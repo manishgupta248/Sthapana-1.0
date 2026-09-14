@@ -20,6 +20,25 @@
   </dl>
 </div>
 
-<p class="mt-4 text-muted">Contact details, personal information, qualifications, and other records will appear here in later steps.</p>
+<div class="card p-4 mt-4" style="max-width: 600px;">
+  <h2 class="h5">Contact Details</h2>
+  {% if employee.contact_details %}
+    <dl class="row mb-2">
+      <dt class="col-sm-4">Personal Mobile</dt><dd class="col-sm-8">{{ employee.contact_details.personal_mobile }}</dd>
+      <dt class="col-sm-4">Official Email</dt><dd class="col-sm-8">{{ employee.contact_details.official_email|default:"—" }}</dd>
+      <dt class="col-sm-4">Current Address</dt><dd class="col-sm-8">{{ employee.contact_details.current_address }}</dd>
+      <dt class="col-sm-4">Emergency Contact</dt><dd class="col-sm-8">{{ employee.contact_details.emergency_contact_name }} ({{ employee.contact_details.emergency_contact_relation }}) — {{ employee.contact_details.emergency_contact_phone }}</dd>
+    </dl>
+    <a href="{% url 'people:contact_details_edit' employee.pk %}" class="btn btn-sm btn-outline-primary">Edit Contact Details</a>
+    {% if perms.people.delete_contactdetails %}
+      <a href="{% url 'people:contact_details_delete' employee.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+    {% endif %}
+  {% else %}
+    <p class="text-muted">No contact details on file yet.</p>
+    <a href="{% url 'people:contact_details_edit' employee.pk %}" class="btn btn-sm btn-primary">Add Contact Details</a>
+  {% endif %}
+</div>
+
+<p class="mt-4 text-muted">Personal information, qualifications, and other records will appear here in later steps.</p>
 <a href="{% url 'people:employee_list' %}" class="btn btn-link ps-0">&larr; Back to list</a>
 {% endblock %}

@@ -99,3 +99,40 @@ class Employee(models.Model):
 
     def __str__(self):
         return f"{self.employee_id} — {self.full_name}"
+
+# ===============================================================
+
+PHONE_VALIDATOR = RegexValidator(
+    r"^[0-9+\-\s]{7,15}$",
+    "Enter a valid phone number (digits, spaces, + and - only).",
+)
+
+
+class ContactDetails(models.Model):
+    """How to reach an employee, and who to contact in an emergency.
+    Linked one-to-one with Employee — each employee has exactly one of
+    these, and editing it simply updates the current values (the audit
+    trail from Step 1.1 still keeps every past version automatically)."""
+
+    employee = models.OneToOneField(
+        Employee, on_delete=models.CASCADE, related_name="contact_details"
+    )
+    personal_mobile = models.CharField(max_length=15, validators=[PHONE_VALIDATOR])
+    alternate_mobile = models.CharField(
+        max_length=15, validators=[PHONE_VALIDATOR], blank=True
+    )
+    personal_email = models.EmailField(blank=True)
+    official_email = models.EmailField(blank=True)
+    current_address = models.TextField()
+    permanent_address = models.TextField()
+    emergency_contact_name = models.CharField(max_length=150)
+    emergency_contact_phone = models.CharField(max_length=15, validators=[PHONE_VALIDATOR])
+    emergency_contact_relation = models.CharField(max_length=50)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return f"Contact details for {self.employee.full_name}"

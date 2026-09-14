@@ -16,6 +16,11 @@
 > git status
 > git add -A
 > git commit -m "Step 1.1: Employee foundation (Department, Designation, Employee CRUD, audit trail, Excel import, dashboard count)"
+### Phase 1.2 
+> git checkout -b phase-1-step-1-2-contact-details
+
+
+
 
 
 ### Important commands

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Contact Details — {{ employee.full_name }}{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">{% if is_edit %}Edit{% else %}Add{% endif %} Contact Details — {{ employee.full_name }}</h1>
+
+<form method="post" class="card p-4" style="max-width: 700px;" x-data="{ sameAddress: false }">
+  {% csrf_token %}
+
+  {% for field in form %}
+    {% if field.name == "permanent_address" %}
+      <div class="mb-2 form-check">
+        <input class="form-check-input" type="checkbox" id="sameAsCurrent" x-model="sameAddress"
+               @change="if (sameAddress) { $refs.permanentAddress.value = $refs.currentAddress.value }">
+        <label class="form-check-label" for="sameAsCurrent">Permanent address same as current address</label>
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        <textarea name="{{ field.html_name }}" id="{{ field.id_for_label }}" rows="3"
+                  class="form-control" x-ref="permanentAddress" :disabled="sameAddress">{{ field.value|default:"" }}</textarea>
+        {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+      </div>
+    {% elif field.name == "current_address" %}
+      <div class="mb-3">
+        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        <textarea name="{{ field.html_name }}" id="{{ field.id_for_label }}" rows="3"
+                  class="form-control" x-ref="currentAddress">{{ field.value|default:"" }}</textarea>
+        {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+      </div>
+    {% else %}
+      <div class="mb-3">
+        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+      </div>
+    {% endif %}
+  {% endfor %}
+
+  <button type="submit" class="btn btn-primary">Save</button>
+  <a href="{% url 'people:employee_detail' employee.pk %}" class="btn btn-link">Cancel</a>
+</form>
+{% endblock %}

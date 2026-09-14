@@ -11,4 +11,7 @@ urlpatterns = [
     path("<int:pk>/", views.employee_detail, name="employee_detail"),
     path("<int:pk>/edit/", views.employee_edit, name="employee_edit"),
     path("<int:pk>/delete/", views.employee_delete, name="employee_delete"),
+    path("<int:employee_id>/contact/edit/", views.contact_details_edit, name="contact_details_edit"),
+    path("<int:employee_id>/contact/delete/", views.contact_details_delete, name="contact_details_delete"),
+    path("contact/import/", views.contact_import, name="contact_import"),
 ]

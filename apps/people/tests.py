@@ -5,6 +5,7 @@ from django.urls import reverse
 
 from .forms import EmployeeForm
 from .models import Department, Designation, Employee
+from .models import ContactDetails
 
 User = get_user_model()
 
@@ -77,3 +78,36 @@ class EmployeePermissionTests(TestCase):
         response = self.client.post(reverse("people:employee_delete", args=[self.employee.pk]))
         self.assertEqual(response.status_code, 403)
         self.assertTrue(Employee.objects.filter(pk=self.employee.pk).exists())
+class ContactDetailsTests(TestCase):
+    def setUp(self):
+        self.department = Department.objects.create(name="Mathematics")
+        self.designation = Designation.objects.create(name="Professor")
+        self.employee = Employee.objects.create(
+            employee_id="EMP300", full_name="Contact Test Person",
+            department=self.department, designation=self.designation,
+            status="ACTIVE", date_joined="2020-01-01", employment_type="REGULAR",
+        )
+
+    def test_contact_details_can_be_created_for_employee(self):
+        contact = ContactDetails.objects.create(
+            employee=self.employee, personal_mobile="9876543210",
+            current_address="123 Test Street", permanent_address="123 Test Street",
+            emergency_contact_name="Test Contact", emergency_contact_phone="9123456780",
+            emergency_contact_relation="Spouse",
+        )
+        self.assertEqual(self.employee.contact_details, contact)
+
+    def test_employee_can_only_have_one_contact_details_record(self):
+        ContactDetails.objects.create(
+            employee=self.employee, personal_mobile="9876543210",
+            current_address="Address A", permanent_address="Address A",
+            emergency_contact_name="A", emergency_contact_phone="9111111111",
+            emergency_contact_relation="Friend",
+        )
+        with self.assertRaises(Exception):
+            ContactDetails.objects.create(
+                employee=self.employee, personal_mobile="9999999999",
+                current_address="Address B", permanent_address="Address B",
+                emergency_contact_name="B", emergency_contact_phone="9222222222",
+                emergency_contact_relation="Friend",
+            )
