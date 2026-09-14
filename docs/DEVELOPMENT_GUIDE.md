@@ -13,7 +13,9 @@
 # 
 > git checkout -b phase-1-step-1-1-employee-foundation
 
-
+> git status
+> git add -A
+> git commit -m "Step 1.1: Employee foundation (Department, Designation, Employee CRUD, audit trail, Excel import, dashboard count)"
 
 
 ### Important commands
