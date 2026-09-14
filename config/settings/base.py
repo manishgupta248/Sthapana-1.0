@@ -28,9 +28,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Installed apps
+    "simple_history",
+
     # My Apps
     'apps.accounts',
     'apps.core',
+    'apps.people',
 ]
 
 MIDDLEWARE = [
@@ -39,6 +43,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    "simple_history.middleware.HistoryRequestMiddleware",
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]

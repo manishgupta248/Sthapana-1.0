@@ -6,8 +6,19 @@
 > git commit -m "Phase 0: Foundation - Django skeleton, custom user model, auth pages, logging, backups, tests"
 > git tag v0.0
 
+> git add .
+> git commit -m "docs: close out Phase 0 - update PROGRESS, CURRENT_STATUS, TODO, DECISIONS"
+
+### Phase- 1 
+# 
+> git checkout -b phase-1-step-1-1-employee-foundation
 
 
+
+
+### Important commands
+// check the exact versions installed (you'll need these for requirements/base.txt below):
+> pip freeze | findstr /I "simple-history openpyxl"
 
 ##  Phase 0 with Step 0.1: Git repository + Python virtual environment setup.
 

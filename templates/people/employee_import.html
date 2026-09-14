@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Import Employees from Excel{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">Import Employees from Excel</h1>
+
+<div class="card p-4 mb-4" style="max-width: 700px;">
+  <p>Your Excel file's first row must contain these exact column headings (any order):</p>
+  <p><code>Employee ID | Full Name | Department | Designation | Status | Date Joined | Employment Type</code></p>
+  <ul>
+    <li><strong>Department</strong> and <strong>Designation</strong> must already exist (add them via the admin panel first) — spelling must match.</li>
+    <li><strong>Status</strong> must be one of: Active, On Leave, Suspended, Retired, Resigned, Deceased, Transferred.</li>
+    <li><strong>Employment Type</strong> must be one of: Regular, Contract, HKRNL, Deputation, Guest Faculty, Other.</li>
+    <li><strong>Date Joined</strong> column should be formatted as a Date in Excel.</li>
+  </ul>
+</div>
+
+<form method="post" enctype="multipart/form-data" class="card p-4" style="max-width: 500px;">
+  {% csrf_token %}
+  <div class="mb-3">{{ form.excel_file.label_tag }}{{ form.excel_file }}</div>
+  <button type="submit" class="btn btn-primary">Upload and Import</button>
+</form>
+
+{% if results %}
+<div class="mt-4" style="max-width: 700px;">
+  <div class="alert alert-success">{{ results.success_count }} employee(s) imported successfully.</div>
+  {% if results.errors %}
+    <div class="alert alert-warning">
+      <strong>{{ results.errors|length }} row(s) were skipped:</strong>
+      <ul class="mb-0">{% for error in results.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+    </div>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}
