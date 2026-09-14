@@ -27,7 +27,8 @@
     <div class="card">
       <div class="card-body">
         <h6 class="card-subtitle text-muted">Pending Tasks</h6>
-        <p class="card-text fs-4">—</p>
+        <p class="card-text fs-4">{{ pending_tasks_count }}</p>
+        {% if overdue_tasks_count %}<span class="badge bg-danger">{{ overdue_tasks_count }} overdue</span>{% endif %}
       </div>
     </div>
   </div>

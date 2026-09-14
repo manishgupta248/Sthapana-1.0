@@ -103,6 +103,7 @@ class DesignationAdmin(ExcelImportAdminMixin, admin.ModelAdmin):
 class EmployeeAdmin(SimpleHistoryAdmin):
     list_display = [
         "employee_id",
+        "initials",
         "full_name",
         "department",
         "designation",

@@ -13,6 +13,7 @@ class EmployeeForm(forms.ModelForm):
         model = Employee
         fields = [
             "employee_id",
+            "initials",
             "full_name",
             "department",
             "designation",

@@ -63,6 +63,13 @@ class Employee(models.Model):
         ("OTHER", "Other"),
     ]
 
+    INITIALS_CHOICES = [
+        ("DR", "Dr."),
+        ("MR", "Mr."),
+        ("MRS", "Mrs."),
+        ("MS", "Ms."),
+    ]
+
     employee_id = models.CharField(
         max_length=20,
         unique=True,
@@ -74,6 +81,7 @@ class Employee(models.Model):
         ],
         help_text="Your office's existing employee code. Must be unique.",
     )
+    initials = models.CharField(max_length=10, choices=INITIALS_CHOICES, default="MR", blank=True)
     full_name = models.CharField(max_length=200)
     department = models.ForeignKey(
         Department, on_delete=models.PROTECT, related_name="employees"

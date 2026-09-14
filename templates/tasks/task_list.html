@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Tasks{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Tasks</h1>
+  <div>
+    {% if perms.tasks.add_task %}<a href="{% url 'tasks:task_add' %}" class="btn btn-primary">+ Add Task</a>{% endif %}
+    <a href="{% url 'tasks:my_tasks' %}" class="btn btn-outline-secondary">My Tasks</a>
+  </div>
+</div>
+
+<form method="get" class="mb-3">
+  <select name="status" class="form-select" style="max-width: 250px;" onchange="this.form.submit()">
+    <option value="">All statuses</option>
+    {% for code, label in status_choices %}
+      <option value="{{ code }}" {% if code == selected_status %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+</form>
+
+{% if messages %}
+  {% for message in messages %}<div class="alert alert-success">{{ message }}</div>{% endfor %}
+{% endif %}
+
+<div class="table-responsive">
+<table class="table table-hover align-middle">
+  <thead class="table-light">
+    <tr><th>Title</th><th>Assignee</th><th>Due Date</th><th>Status</th><th>Priority</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for task in tasks %}
+    <tr>
+      <td><a href="{% url 'tasks:task_detail' task.pk %}">{{ task.title }}</a></td>
+      <td>{{ task.assignee }}</td>
+      <td>{{ task.due_date }}{% if task.is_overdue %} <span class="badge bg-danger">Overdue</span>{% endif %}</td>
+      <td>
+        <span class="badge bg-{% if task.status == 'OPEN' %}secondary{% elif task.status == 'IN_PROGRESS' %}info{% elif task.status == 'COMPLETED' %}success{% else %}dark{% endif %}">
+          {{ task.get_status_display }}
+        </span>
+      </td>
+      <td>
+        <span class="badge bg-{% if task.priority == 'HIGH' %}danger{% elif task.priority == 'MEDIUM' %}warning text-dark{% else %}light text-dark{% endif %}">
+          {{ task.get_priority_display }}
+        </span>
+      </td>
+      <td class="text-end"><a href="{% url 'tasks:task_detail' task.pk %}" class="btn btn-sm btn-outline-secondary">View</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6" class="text-center text-muted">No tasks yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

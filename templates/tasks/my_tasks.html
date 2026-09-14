@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}My Tasks{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">My Tasks</h1>
+{% if tasks %}
+<div class="table-responsive">
+<table class="table table-hover align-middle">
+  <thead class="table-light"><tr><th>Title</th><th>Due Date</th><th>Status</th><th>Priority</th><th></th></tr></thead>
+  <tbody>
+    {% for task in tasks %}
+    <tr class="{% if task.is_overdue %}table-danger{% endif %}">
+      <td><a href="{% url 'tasks:task_detail' task.pk %}">{{ task.title }}</a></td>
+      <td>{{ task.due_date }}{% if task.is_overdue %} <strong>(Overdue)</strong>{% endif %}</td>
+      <td>{{ task.get_status_display }}</td>
+      <td>{{ task.get_priority_display }}</td>
+      <td class="text-end"><a href="{% url 'tasks:task_detail' task.pk %}" class="btn btn-sm btn-outline-secondary">View</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% else %}
+<p class="text-muted">You have no open tasks.</p>
+{% endif %}
+{% endblock %}

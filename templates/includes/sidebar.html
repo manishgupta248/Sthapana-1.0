@@ -6,6 +6,7 @@
       <a class="nav-link" href="{% url 'people:employee_add' %}">Add Employee</a>
       <a class="nav-link" href="{% url 'people:employee_import' %}">Import Employees</a>
     {% endif %}
+    <a class="nav-link" href="{% url 'tasks:task_list' %}">Tasks</a>
     {% if user.is_staff %}
       <hr class="sidebar-divider">
       <a class="nav-link" href="/admin/">Django Admin Panel</a>
