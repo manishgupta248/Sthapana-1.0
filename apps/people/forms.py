@@ -13,14 +13,18 @@ class EmployeeForm(forms.ModelForm):
         model = Employee
         fields = [
             "employee_id",
-            "initials",
+            "initial",
             "full_name",
             "department",
             "designation",
             "status",
             "date_joined",
             "employment_type",
+            "employee_category",
         ]
+        labels = {
+            "full_name": "Name",
+        }
         widgets = {
             "date_joined": forms.DateInput(attrs={"type": "date"}),
         }

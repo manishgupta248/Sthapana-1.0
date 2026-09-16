@@ -133,3 +133,32 @@ entries at the top.
 - Git tag: none
 - Notes/deviations from original plan: none — this was an owner-
   requested enhancement, not part of the original phase roadmap.
+
+  ### Phase 3 — Tasks & Reminders — COMPLETED 2026-09-14
+- Branch: phase-3-tasks-reminders, merged to main on 2026-09-14
+- What was built: Task model (title, description, assignee, due date,
+  status [Open/In Progress/Completed/Cancelled], priority [Low/Medium/
+  High], related link, created-by); TaskAttachment model supporting
+  multiple file uploads per task restricted to PDF/Word/Excel/image
+  types; full web CRUD (list/add/edit/detail, delete restricted to
+  Admin, add/edit open to all roles); Django admin with inline
+  attachment editing; change history via django-simple-history; "My
+  Tasks" in-app reminder view flagging overdue tasks; dashboard
+  "Pending Tasks" card now shows a real count with an overdue badge;
+  media file serving configured for local development.
+- Smoke test performed: Owner added a task via admin (verified
+  created-by fills in correctly), added a task via the web form with
+  two attachments and a link, edited an existing task and confirmed
+  the change saved and attachments remained intact, opened an
+  attachment link and confirmed the file downloads, checked the
+  dashboard showed the correct pending/overdue counts, confirmed a
+  Clerk-role user could add/edit tasks but not see the Delete button.
+  — Result: PASS
+- Automated tests: 4 tests (apps/tasks), all passing
+- Git tag: v0.3
+- Notes/deviations from original plan: built out of the original phase
+  order — Phase 1 Steps 1.3–1.9 and Phase 2 remain on hold at owner's
+  request, Phase 3 was built ahead of them. Task-to-Record and
+  Task-to-Meeting linking deferred since those apps don't exist yet.
+  Two fields added beyond the original roadmap scope at owner's
+  request: a related link field and multiple file attachments.

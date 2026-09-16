@@ -12,11 +12,13 @@
 <div class="card p-4" style="max-width: 600px;">
   <dl class="row mb-0">
     <dt class="col-sm-4">Employee ID</dt><dd class="col-sm-8">{{ employee.employee_id }}</dd>
+    <dt class="col-sm-4">Initial</dt><dd class="col-sm-8">{{ employee.get_initial_display|default:"—" }}</dd>
     <dt class="col-sm-4">Department</dt><dd class="col-sm-8">{{ employee.department.name }}</dd>
     <dt class="col-sm-4">Designation</dt><dd class="col-sm-8">{{ employee.designation.name }}</dd>
     <dt class="col-sm-4">Status</dt><dd class="col-sm-8">{{ employee.get_status_display }}</dd>
-    <dt class="col-sm-4">Date Joined</dt><dd class="col-sm-8">{{ employee.date_joined }}</dd>
+    <dt class="col-sm-4">Date Joined</dt><dd class="col-sm-8">{{ employee.date_joined|default:"—" }}</dd>
     <dt class="col-sm-4">Employment Type</dt><dd class="col-sm-8">{{ employee.get_employment_type_display }}</dd>
+    <dt class="col-sm-4">Employee Category</dt><dd class="col-sm-8">{{ employee.get_employee_category_display }}</dd>
   </dl>
 </div>
 

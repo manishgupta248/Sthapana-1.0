@@ -63,13 +63,27 @@ class Employee(models.Model):
         ("OTHER", "Other"),
     ]
 
-    INITIALS_CHOICES = [
+    INITIAL_CHOICES = [
         ("DR", "Dr."),
         ("MR", "Mr."),
         ("MRS", "Mrs."),
         ("MS", "Ms."),
+        ("SHRI", "Shri"),
+        ("SMT", "Smt."),
     ]
 
+    EMPLOYEE_CATEGORY_CHOICES = [
+        ("TEACHING", "Teaching"),
+        ("WORKSHOP", "Workshop"),
+        ("ADMINISTRATIVE", "Administrative"),
+        ("OTHER", "Other"),
+    ]
+
+
+    initial = models.CharField(
+        max_length=10, choices=INITIAL_CHOICES, blank=True, default="",
+        help_text="Title/Salutation (optional).",
+    )
     employee_id = models.CharField(
         max_length=20,
         unique=True,
@@ -81,7 +95,6 @@ class Employee(models.Model):
         ],
         help_text="Your office's existing employee code. Must be unique.",
     )
-    initials = models.CharField(max_length=10, choices=INITIALS_CHOICES, default="MR", blank=True)
     full_name = models.CharField(max_length=200)
     department = models.ForeignKey(
         Department, on_delete=models.PROTECT, related_name="employees"
@@ -90,7 +103,14 @@ class Employee(models.Model):
         Designation, on_delete=models.PROTECT, related_name="employees"
     )
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="ACTIVE")
-    date_joined = models.DateField()
+    date_joined = models.DateField(
+        blank=True, null=True,
+        help_text="Optional for now — can be filled in later.",
+    )
+    employee_category = models.CharField(
+        max_length=20, choices=EMPLOYEE_CATEGORY_CHOICES, default="OTHER",
+        help_text="Broad category of role — separate from Employment Type.",
+    )
     employment_type = models.CharField(
         max_length=20, choices=EMPLOYMENT_TYPE_CHOICES, default="REGULAR"
     )

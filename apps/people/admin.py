@@ -103,15 +103,15 @@ class DesignationAdmin(ExcelImportAdminMixin, admin.ModelAdmin):
 class EmployeeAdmin(SimpleHistoryAdmin):
     list_display = [
         "employee_id",
-        "initials",
         "full_name",
         "department",
         "designation",
         "status",
         "employment_type",
+        "employee_category",
         "date_joined",
     ]
-    list_filter = ["status", "employment_type", "department"]
+    list_filter = ["status", "employment_type", "employee_category", "department"]
     search_fields = ["employee_id", "full_name"]
 
 @admin.register(ContactDetails)

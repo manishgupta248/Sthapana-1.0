@@ -6,26 +6,22 @@ disagree, trust this file.
 
 ---
 
-- **Active phase:** Phase 1. Steps 1.1 (Employee Foundation) and 1.2
-  (Contact Details) complete. **Steps 1.3–1.9 remain paused at the
-  owner's request** — the owner will implement the remaining detail
-  tables (Personal Info, Qualifications, Employment Details, Salary,
-  Promotions, Leave, tabbed detail page) independently. Do not resume
-  these without the owner explicitly reopening them.
+- **Active phase:** None active. Phase 3 (Tasks & Reminders) just
+  completed, built ahead of the original roadmap order. Phase 1 Steps
+  1.3–1.9 and Phase 2 (Records) remain paused at the owner's request —
+  do not resume either without the owner explicitly reopening them.
 - **Current git branch:** main
-- **Last completed work:** Two owner-requested enhancements — admin-panel
-  Excel import for Department/Designation, and a site-wide sidebar/
-  footer/logo layout update.
-- **Last smoke test result:** PASS (2026-09-14) — see PROGRESS.md for
-  detail on both enhancements.
+- **Last completed work:** Phase 3 — Tasks & Reminders (see PROGRESS.md).
+- **Last smoke test result:** PASS (2026-09-14).
 - **Open decisions awaiting owner input:** None currently blocking.
 - **Known issues/blockers:** None
 - **Continuity system:** `docs/` folder is the source of truth across
   chat threads. **Action needed:** re-upload this file, PROGRESS.md,
   DECISIONS.md, and TODO.md to the "Sthapana" Claude Project's Knowledge,
   replacing the old versions, if you're using a Claude Project.
-- **Next action:** Awaiting owner's direction — either resume Phase 1
-  Steps 1.3–1.9, or a further owner-led request.
+- **Next action:** Awaiting owner's direction — resume Phase 1 Steps
+  1.3–1.9, resume Phase 2, move on to Phase 4 (Meetings), or another
+  owner-led request.
 
 ---
 

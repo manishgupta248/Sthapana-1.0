@@ -55,6 +55,12 @@ explicitly reopens this part of the roadmap.
 - [x] Site-wide sidebar (Dashboard/Employees/Add Employee/Import
       Employees/Admin-only Django Admin link), footer with logo, and
       logo added to top navbar
+## Phase 3 — Tasks & Reminders (`apps/tasks`) — COMPLETE
+- [x] Task model: assignee, due date, status, priority
+- [x] Optional linking to a Record or Meeting action item — DEFERRED (those apps don't exist yet; will be added as a small follow-up when Phase 2/4 are built)
+- [x] Simple reminder mechanism (in-app "My Tasks" list + dashboard card, flagging overdue tasks)
+- [x] Minimal automated tests
+- [x] Additional fields (owner-requested, beyond original roadmap): related link (URL), multiple file attachments (PDF/Word/Excel/image only)
 
 ### Step 1.3 — Personal Information (not started)
 - [ ] PAN, Aadhar, Date of Birth, Bank details — Admin-only, masked by default with logged reveals
@@ -89,12 +95,6 @@ explicitly reopens this part of the roadmap.
 - [ ] Inward/Outward register model (diary number, direction, date, subject)
 - [ ] File upload handling (media folder structure, file type validation)
 - [ ] List/search/filter by date, subject, department
-- [ ] Minimal automated tests
-
-## Phase 3 — Tasks & Reminders (`apps/tasks`)
-- [ ] Task model: assignee, due date, status, priority
-- [ ] Optional linking to a Record or Meeting action item
-- [ ] Simple reminder mechanism (in-app list first; email/Telegram later)
 - [ ] Minimal automated tests
 
 ## Phase 4 — Meetings Notes & Records (`apps/meetings`)

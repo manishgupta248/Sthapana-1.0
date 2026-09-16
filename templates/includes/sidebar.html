@@ -5,6 +5,7 @@
     {% if perms.people.add_employee %}
       <a class="nav-link" href="{% url 'people:employee_add' %}">Add Employee</a>
       <a class="nav-link" href="{% url 'people:employee_import' %}">Import Employees</a>
+      <a class="nav-link" href="{% url 'people:contact_import' %}">Import Contact Details</a>
     {% endif %}
     <a class="nav-link" href="{% url 'tasks:task_list' %}">Tasks</a>
     {% if user.is_staff %}

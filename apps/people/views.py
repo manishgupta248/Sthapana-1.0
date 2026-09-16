@@ -2,10 +2,10 @@ import openpyxl
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import get_object_or_404, redirect, render
-
+from django.http import HttpResponse
 from .forms import EmployeeForm, ExcelImportForm
 from .models import Department, Designation, Employee
-
+from django.utils import timezone
 from django.core.exceptions import PermissionDenied
 
 from .forms import ContactDetailsForm, ContactImportForm
@@ -15,19 +15,126 @@ STATUS_LOOKUP = {label.upper(): code for code, label in Employee.STATUS_CHOICES}
 EMPLOYMENT_TYPE_LOOKUP = {
     label.upper(): code for code, label in Employee.EMPLOYMENT_TYPE_CHOICES
 }
+EMPLOYEE_CATEGORY_LOOKUP = {
+    label.upper(): code for code, label in Employee.EMPLOYEE_CATEGORY_CHOICES
+}
+INITIAL_LOOKUP = {label.upper(): code for code, label in Employee.INITIAL_CHOICES}
 
 
-@login_required
-def employee_list(request):
+SORT_FIELD_MAP = {
+    "employee_id": "employee_id",
+    "full_name": "full_name",
+    "department": "department__name",
+    "designation": "designation__name",
+    "status": "status",
+    "employment_type": "employment_type",
+    "employee_category": "employee_category",
+}
+
+
+def _get_filtered_sorted_employees(request):
+    """Shared by the Employee list page and the Excel export, so both
+    always show/export exactly the same set of employees for a given
+    set of filters, search text, and sort order."""
     employees = Employee.objects.select_related("department", "designation").all()
+
     query = request.GET.get("q", "").strip()
     if query:
         employees = employees.filter(full_name__icontains=query) | employees.filter(
             employee_id__icontains=query
         )
-    return render(
-        request, "people/employee_list.html", {"employees": employees, "query": query}
+
+    department = request.GET.get("department", "").strip()
+    if department:
+        employees = employees.filter(department_id=department)
+
+    designation = request.GET.get("designation", "").strip()
+    if designation:
+        employees = employees.filter(designation_id=designation)
+
+    status = request.GET.get("status", "").strip()
+    if status:
+        employees = employees.filter(status=status)
+
+    employment_type = request.GET.get("employment_type", "").strip()
+    if employment_type:
+        employees = employees.filter(employment_type=employment_type)
+
+    employees = employees.distinct()
+
+    sort_field = request.GET.get("sort", "full_name")
+    sort_dir = request.GET.get("dir", "asc")
+    order_column = SORT_FIELD_MAP.get(sort_field, "full_name")
+    if sort_dir == "desc":
+        order_column = "-" + order_column
+
+    return employees.order_by(order_column)
+
+
+@login_required
+def employee_list(request):
+    employees = _get_filtered_sorted_employees(request)
+    context = {
+        "employees": employees,
+        "query": request.GET.get("q", "").strip(),
+        "selected_department": request.GET.get("department", "").strip(),
+        "selected_designation": request.GET.get("designation", "").strip(),
+        "selected_status": request.GET.get("status", "").strip(),
+        "selected_employment_type": request.GET.get("employment_type", "").strip(),
+        "departments": Department.objects.filter(is_active=True),
+        "designations": Designation.objects.filter(is_active=True),
+        "status_choices": Employee.STATUS_CHOICES,
+        "employment_type_choices": Employee.EMPLOYMENT_TYPE_CHOICES,
+    }
+    return render(request, "people/employee_list.html", context)
+
+@login_required
+@permission_required("people.view_employee", raise_exception=True)
+def employee_export(request):
+    """Exports employees to Excel. If specific rows were checked on the
+    list page, only those are exported; otherwise everything currently
+    matching the filters/search/sort is exported."""
+
+    employees = _get_filtered_sorted_employees(request)
+
+    selected_ids = request.GET.getlist("selected_ids")
+    if selected_ids:
+        employees = employees.filter(pk__in=selected_ids)
+
+    workbook = openpyxl.Workbook()
+    sheet = workbook.active
+    sheet.title = "Employees"
+
+    headers = [
+        "Employee ID", "Initial", "Name", "Department", "Designation",
+        "Status", "Employment Type", "Employee Category", "Date Joined",
+    ]
+    sheet.append(headers)
+
+    for employee in employees:
+        sheet.append([
+            employee.employee_id,
+            employee.get_initial_display() if employee.initial else "",
+            employee.full_name,
+            employee.department.name,
+            employee.designation.name,
+            employee.get_status_display(),
+            employee.get_employment_type_display(),
+            employee.get_employee_category_display(),
+            employee.date_joined.strftime("%Y-%m-%d") if employee.date_joined else "",
+        ])
+
+    for column_cells in sheet.columns:
+        max_length = max(len(str(cell.value)) for cell in column_cells)
+        sheet.column_dimensions[column_cells[0].column_letter].width = max_length + 4
+
+    timestamp = timezone.now().strftime("%Y-%m-%d_%H%M")
+    response = HttpResponse(
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
+    response["Content-Disposition"] = f'attachment; filename="employees_export_{timestamp}.xlsx"'
+    workbook.save(response)
+    return response
 
 
 @login_required
@@ -103,13 +210,15 @@ def _process_excel_import(uploaded_file):
     header_row = [str(cell.value).strip() if cell.value else "" for cell in sheet[1]]
     required_headers = [
         "Employee ID",
-        "Full Name",
+        "Name",
         "Department",
         "Designation",
         "Status",
-        "Date Joined",
         "Employment Type",
+        "Employee Category",
     ]
+    optional_headers = ["Initial", "Date Joined"]
+
     missing = [h for h in required_headers if h not in header_row]
     if missing:
         return {
@@ -118,6 +227,10 @@ def _process_excel_import(uploaded_file):
         }
 
     col_index = {name: header_row.index(name) for name in required_headers}
+    for name in optional_headers:
+        if name in header_row:
+            col_index[name] = header_row.index(name)
+
     success_count = 0
     errors = []
 
@@ -127,12 +240,20 @@ def _process_excel_import(uploaded_file):
             continue  # skip blank rows
 
         raw_employee_id = str(values[col_index["Employee ID"]] or "").strip()
-        raw_full_name = str(values[col_index["Full Name"]] or "").strip()
+        raw_full_name = str(values[col_index["Name"]] or "").strip()
         raw_department = str(values[col_index["Department"]] or "").strip()
         raw_designation = str(values[col_index["Designation"]] or "").strip()
         raw_status = str(values[col_index["Status"]] or "").strip()
-        raw_date_joined = values[col_index["Date Joined"]]
         raw_employment_type = str(values[col_index["Employment Type"]] or "").strip()
+        raw_employee_category = str(values[col_index["Employee Category"]] or "").strip()
+
+        raw_initial = ""
+        if "Initial" in col_index:
+            raw_initial = str(values[col_index["Initial"]] or "").strip()
+
+        raw_date_joined = None
+        if "Date Joined" in col_index:
+            raw_date_joined = values[col_index["Date Joined"]]
 
         department = Department.objects.filter(name__iexact=raw_department).first()
         designation = Designation.objects.filter(name__iexact=raw_designation).first()
@@ -155,9 +276,21 @@ def _process_excel_import(uploaded_file):
         if not employment_type_code:
             row_errors.append(f"Employment Type '{raw_employment_type}' is not a recognized option.")
 
-        date_joined_value = (
-            raw_date_joined.date() if hasattr(raw_date_joined, "date") else raw_date_joined
-        )
+        employee_category_code = EMPLOYEE_CATEGORY_LOOKUP.get(raw_employee_category.upper())
+        if not employee_category_code:
+            row_errors.append(f"Employee Category '{raw_employee_category}' is not a recognized option.")
+
+        initial_code = ""
+        if raw_initial:
+            initial_code = INITIAL_LOOKUP.get(raw_initial.upper())
+            if not initial_code:
+                row_errors.append(f"Initial '{raw_initial}' is not a recognized option.")
+
+        date_joined_value = None
+        if raw_date_joined not in (None, ""):
+            date_joined_value = (
+                raw_date_joined.date() if hasattr(raw_date_joined, "date") else raw_date_joined
+            )
 
         if row_errors:
             errors.append(f"Row {row_number}: " + " ".join(row_errors))
@@ -166,12 +299,14 @@ def _process_excel_import(uploaded_file):
         form = EmployeeForm(
             data={
                 "employee_id": raw_employee_id,
+                "initial": initial_code,
                 "full_name": raw_full_name,
                 "department": department.pk,
                 "designation": designation.pk,
                 "status": status_code,
                 "date_joined": date_joined_value,
                 "employment_type": employment_type_code,
+                "employee_category": employee_category_code,
             }
         )
         if form.is_valid():
@@ -224,6 +359,45 @@ def contact_details_delete(request, employee_id):
     return render(
         request, "people/contact_confirm_delete.html", {"employee": employee}
     )
+
+@login_required
+def contact_import_template(request):
+    """Gives the user a ready-to-fill Excel file with the correct column
+    headings and one example row, so they don't have to guess the format
+    before using the Contact Details importer above."""
+
+    if not (
+        request.user.has_perm("people.add_contactdetails")
+        and request.user.has_perm("people.change_contactdetails")
+    ):
+        raise PermissionDenied
+
+    workbook = openpyxl.Workbook()
+    sheet = workbook.active
+    sheet.title = "Contact Details"
+
+    headers = [
+        "Employee ID", "Personal Mobile", "Alternate Mobile", "Personal Email",
+        "Official Email", "Current Address", "Permanent Address",
+        "Emergency Contact Name", "Emergency Contact Phone", "Emergency Contact Relation",
+    ]
+    sheet.append(headers)
+    sheet.append([
+        "EMP001", "9876543210", "9123456780", "employee@example.com",
+        "employee@university.edu", "123 Example Street, City",
+        "123 Example Street, City", "Jane Doe", "9988776655", "Spouse",
+    ])
+
+    for column_cells in sheet.columns:
+        max_length = max(len(str(cell.value)) for cell in column_cells)
+        sheet.column_dimensions[column_cells[0].column_letter].width = max_length + 4
+
+    response = HttpResponse(
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+    response["Content-Disposition"] = 'attachment; filename="contact_details_import_template.xlsx"'
+    workbook.save(response)
+    return response
 
 
 @login_required

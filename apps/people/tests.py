@@ -146,3 +146,113 @@ class LookupExcelImportAdminTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(Department.objects.filter(name="New Department").exists())
         self.assertEqual(Department.objects.filter(name__iexact="Existing Dept").count(), 1)
+class EmployeeNewFieldsTests(TestCase):
+    def setUp(self):
+        self.department = Department.objects.create(name="Botany")
+        self.designation = Designation.objects.create(name="Reader")
+
+    def test_employee_category_is_required_on_form(self):
+        form = EmployeeForm(data={
+            "employee_id": "EMP400", "full_name": "No Category Person",
+            "department": self.department.pk, "designation": self.designation.pk,
+            "status": "ACTIVE", "employment_type": "REGULAR",
+        })
+        self.assertFalse(form.is_valid())
+        self.assertIn("employee_category", form.errors)
+
+    def test_date_joined_and_initial_are_optional_on_form(self):
+        form = EmployeeForm(data={
+            "employee_id": "EMP401", "full_name": "Optional Fields Person",
+            "department": self.department.pk, "designation": self.designation.pk,
+            "status": "ACTIVE", "employment_type": "REGULAR",
+            "employee_category": "TEACHING",
+        })
+        self.assertTrue(form.is_valid(), form.errors)
+
+class ContactImportTemplateTests(TestCase):
+    def setUp(self):
+        admin_group, _ = Group.objects.get_or_create(name="Admin")
+        self.admin_user = User.objects.create_user(username="admin2", password="testpass123")
+        self.admin_user.groups.add(admin_group)
+        self.admin_user.is_active = True
+        self.admin_user.save()
+
+    def test_template_download_returns_an_excel_file(self):
+        self.client.login(username="admin2", password="testpass123")
+        response = self.client.get(reverse("people:contact_import_template"))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("spreadsheetml", response["Content-Type"])
+
+class EmployeeListFilterTests(TestCase):
+    def setUp(self):
+        self.dept_a = Department.objects.create(name="Filter Dept A")
+        self.dept_b = Department.objects.create(name="Filter Dept B")
+        self.designation = Designation.objects.create(name="Filter Test Post")
+        self.user = User.objects.create_user(username="filteruser", password="testpass123")
+        self.user.is_active = True
+        self.user.save()
+
+        Employee.objects.create(
+            employee_id="FLT001", full_name="Person In Dept A",
+            department=self.dept_a, designation=self.designation,
+            status="ACTIVE", employment_type="REGULAR", employee_category="OTHER",
+        )
+        Employee.objects.create(
+            employee_id="FLT002", full_name="Person In Dept B",
+            department=self.dept_b, designation=self.designation,
+            status="RETIRED", employment_type="CONTRACT", employee_category="OTHER",
+        )
+
+    def test_department_filter_returns_only_matching_employees(self):
+        self.client.login(username="filteruser", password="testpass123")
+        response = self.client.get(reverse("people:employee_list"), {"department": self.dept_a.pk})
+        names = [e.full_name for e in response.context["employees"]]
+        self.assertIn("Person In Dept A", names)
+        self.assertNotIn("Person In Dept B", names)
+
+    def test_status_filter_returns_only_matching_employees(self):
+        self.client.login(username="filteruser", password="testpass123")
+        response = self.client.get(reverse("people:employee_list"), {"status": "RETIRED"})
+        names = [e.full_name for e in response.context["employees"]]
+        self.assertIn("Person In Dept B", names)
+        self.assertNotIn("Person In Dept A", names)
+
+class EmployeeSortExportTests(TestCase):
+    def setUp(self):
+        self.department = Department.objects.create(name="Export Dept")
+        self.designation = Designation.objects.create(name="Export Post")
+        readonly_group, _ = Group.objects.get_or_create(name="ReadOnly")
+        self.user = User.objects.create_user(username="exportuser", password="testpass123")
+        self.user.groups.add(readonly_group)
+        self.user.is_active = True
+        self.user.save()
+
+        self.emp_a = Employee.objects.create(
+            employee_id="EXP001", full_name="Zed Export Person",
+            department=self.department, designation=self.designation,
+            status="ACTIVE", employment_type="REGULAR", employee_category="OTHER",
+        )
+        self.emp_b = Employee.objects.create(
+            employee_id="EXP002", full_name="Amy Export Person",
+            department=self.department, designation=self.designation,
+            status="ACTIVE", employment_type="REGULAR", employee_category="OTHER",
+        )
+
+    def test_sorting_by_name_ascending(self):
+        self.client.login(username="exportuser", password="testpass123")
+        response = self.client.get(reverse("people:employee_list"), {"sort": "full_name", "dir": "asc"})
+        names = [e.full_name for e in response.context["employees"]]
+        self.assertEqual(names.index("Amy Export Person") < names.index("Zed Export Person"), True)
+
+    def test_export_returns_excel_file(self):
+        self.client.login(username="exportuser", password="testpass123")
+        response = self.client.get(reverse("people:employee_export"))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("spreadsheetml", response["Content-Type"])
+
+    def test_export_with_selected_ids_only_includes_those(self):
+        self.client.login(username="exportuser", password="testpass123")
+        response = self.client.get(
+            reverse("people:employee_export"), {"selected_ids": [self.emp_a.pk]}
+        )
+        self.assertEqual(response.status_code, 200)
