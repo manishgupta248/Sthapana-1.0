@@ -121,11 +121,14 @@ explicitly reopens this part of the roadmap.
 - [ ] API authentication (token-based)
 - [ ] API tests
 
-## Phase 7 — Telegram Bot (deterministic commands only)
-- [ ] Bot registered, webhook or polling configured
-- [ ] Whitelist of authorized Telegram chat IDs mapped to system users
-- [ ] Deterministic slash-commands (e.g. `/addtask`, `/todaysnotices`)
-- [ ] Bot calls the REST API — no direct DB access from the bot
+## Phase 7 — Telegram Bot (deterministic commands only) — COMPLETE
+- [x] Bot registered, polling configured (not webhook — no public HTTPS endpoint on the dev PC)
+- [x] Whitelist of authorized Telegram chat IDs mapped to system users (TelegramUser model, managed via Django admin)
+- [x] Deterministic slash-commands: /start, /help, /newtask, /mytasks, /setstatus, /remind
+- [x] Automatic daily task reminders via Windows Task Scheduler (send_task_reminders)
+- [x] Web-to-Telegram ad-hoc messaging page (staff-only)
+- [x] Clean shutdown via signal handling (no dead loop on Ctrl+C)
+- [ ] Bot calling REST API instead of Django models directly — deferred until Phase 6 (DRF) exists; command functions are already isolated in commands.py so this refactor is contained when it happens
 
 ## Phase 8 — Backup & Maintenance Hardening
 - [ ] Review/upgrade backup automation based on real usage

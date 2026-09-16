@@ -39,6 +39,11 @@
 | 30 | Date Joined changed from required to optional on Employee | Owner doesn't need this at data-entry time yet; kept as an optional field rather than removed, since it's valuable for future seniority/pension reporting |
 | 31 | "Full Name" relabeled to "Name" on forms/pages only; internal field name left unchanged | Delivers the wording the owner wants while avoiding a much larger, riskier rename across forms, imports, and tests |
 | 32 | Employee list page supports combined filtering (Department/Designation/Status/Employment Type + text search), column sorting, and Excel export (selected rows, or everything currently filtered/sorted) | Owner-requested; matches real office need to extract subsets of staff data for reporting |
+
+| 33 | Phase 7 (Telegram Bot) built out of sequence, directly after the September 16 enhancement batch, skipping ahead of Phases 2/4/5/6 | Owner's explicit request — bot is a self-contained app with no dependency on those phases beyond the already-complete Tasks app |
+| 34 | Telegram bot uses long polling, not webhooks | Dev PC has no public HTTPS endpoint; polling needs no port-forwarding or tunnel and matches the project's "no fragile infra" principle. Can be swapped for a webhook later without touching command logic |
+| 35 | Bot commands call Django models directly for now, not the (not-yet-built) REST API | Phase 6 doesn't exist yet; command functions are isolated in one file (commands.py) so refactoring onto DRF later is contained |
+| 36 | Telegram chat-ID-to-user mapping resolved (OQ-2): a TelegramUser table, managed via Django admin, not hardcoded in .env | Keeps the door open to multiple Telegram users later without a rebuild, while staying simple for the current single-user case |
 ## Open questions (need owner's explicit decision)
 
 

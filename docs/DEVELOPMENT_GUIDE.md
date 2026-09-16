@@ -29,8 +29,8 @@
 > git commit -m "Update docs: Step 1.2 complete, Steps 1.3-1.9 paused at owner's request"
 > git checkout -b feature-lookup-excel-import
 
-
-
+### Phase 7
+> git checkout -b phase-7-telegram-integration
 
 ### Important commands
 // check the exact versions installed (you'll need these for requirements/base.txt below):

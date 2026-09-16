@@ -9,6 +9,7 @@ urlpatterns = [
     path('', include('apps.core.urls')),
     path("people/", include("apps.people.urls")),
     path("tasks/", include("apps.tasks.urls")),
+    path("telegram/", include("apps.telegram_bot.urls")),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

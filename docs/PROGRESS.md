@@ -208,3 +208,43 @@ entries at the top.
   Task-to-Meeting linking deferred since those apps don't exist yet.
   Two fields added beyond the original roadmap scope at owner's
   request: a related link field and multiple file attachments.
+
+### Phase 7 — Telegram Bot Integration — COMPLETED 2026-09-16
+- Branch: phase-7-telegram-bot, merged to main on 2026-09-16
+- What was built: apps/telegram_bot — TelegramUser (chat-ID whitelist,
+  admin-managed) and BotState (tracks last processed message) models;
+  a thin requests-based TelegramClient wrapper (no bot framework
+  dependency); a flat command registry (commands.py) with /start,
+  /help, /newtask, /mytasks, /setstatus, /remind; long-polling loop
+  (run_telegram_bot management command) with signal-based clean
+  shutdown on Ctrl+C; scheduled daily reminders (send_task_reminders
+  management command, run via Windows Task Scheduler) for overdue/
+  due-today tasks, sharing logic with /remind via reminders.py; a
+  staff-only web page (/telegram/send/) to push an ad-hoc message to
+  all linked Telegram users. HTML entities in task titles are escaped
+  before being sent, avoiding Telegram parse errors.
+- Smoke test performed: Owner confirmed /start and /help with the
+  whitelist enforced (unrecognised chats get no reply); Ctrl+C
+  shutdown confirmed clean after fixing an initial Windows delayed-
+  signal issue (poll timeout shortened from 30s to 5s + explicit
+  signal handlers); /newtask creates a task with correct defaults and
+  confirmation message; /mytasks lists correctly (after fixing an HTML
+  parse error caused by literal <id>/<status> placeholder text in the
+  usage message); /setstatus updates status and reflects on the
+  website; /remind and the scheduled Task Scheduler job both deliver
+  correct overdue/due-today summaries, tested with and without the bot
+  polling loop running; the send-message web page is staff-only,
+  delivers messages, and validates against empty submissions.
+  — Result: PASS
+- Automated tests: 12 new tests (apps/telegram_bot), all passing
+- Git tag: v0.4
+- Notes/deviations from original plan: built out of the original phase
+  order (see Decision #33). Two bugs found and fixed during
+  development, not deferred: (1) Ctrl+C appeared to hang due to
+  Windows' delayed-signal behavior during a 30-second blocking network
+  wait — fixed by shortening the poll interval and adding explicit
+  SIGINT/SIGTERM handlers; (2) /mytasks crashed with a Telegram "can't
+  parse entities" error because literal <id>/<status> placeholder text
+  in a usage hint was misread as HTML — fixed by rewording placeholders
+  and adding systematic HTML-escaping for any database-sourced text
+  (task titles) inserted into bot messages.

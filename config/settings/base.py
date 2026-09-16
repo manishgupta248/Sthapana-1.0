@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'apps.core',
     'apps.people',
     "apps.tasks",
+    "apps.telegram_bot",
 ]
 
 MIDDLEWARE = [
@@ -109,6 +110,8 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+TELEGRAM_BOT_TOKEN = env("TELEGRAM_BOT_TOKEN")
 
 # Logging configuration: writes to a file that auto-archives itself
 # once it reaches 5 MB, keeping up to 5 old copies before deleting the oldest.
