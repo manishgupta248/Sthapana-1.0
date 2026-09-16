@@ -34,6 +34,11 @@
 | 26 | Department/Designation Excel import built as a lightweight custom admin view using the existing openpyxl library, rather than adding a new package like django-import-export | Avoids an extra dependency for a simple two-column import; matches the pattern already used for Employee/Contact imports |
 | 27 | Sidebar is always visible (not collapsible) | Owner confirmed desktop-only use for now; simpler to build and maintain |
 | 28 | Django Admin Panel link in the sidebar is shown only to Admin/staff-role users | Avoids showing Clerk/ReadOnly/EstablishmentOfficer users a link that would just deny them access |
+
+| 29 | Employee gained two new Core fields — "Initial" (Title/Salutation, optional) and "Employee Category" (Teaching/Workshop/Administrative/Other, required) — kept separate from the existing Employment Type field | Employment Type (Regular/Contract/HKRNL/Deputation/etc.) tracks appointment nature; Employee Category tracks role type — different classifications, both needed for reporting |
+| 30 | Date Joined changed from required to optional on Employee | Owner doesn't need this at data-entry time yet; kept as an optional field rather than removed, since it's valuable for future seniority/pension reporting |
+| 31 | "Full Name" relabeled to "Name" on forms/pages only; internal field name left unchanged | Delivers the wording the owner wants while avoiding a much larger, riskier rename across forms, imports, and tests |
+| 32 | Employee list page supports combined filtering (Department/Designation/Status/Employment Type + text search), column sorting, and Excel export (selected rows, or everything currently filtered/sorted) | Owner-requested; matches real office need to extract subsets of staff data for reporting |
 ## Open questions (need owner's explicit decision)
 
 

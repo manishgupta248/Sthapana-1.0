@@ -55,6 +55,14 @@ explicitly reopens this part of the roadmap.
 - [x] Site-wide sidebar (Dashboard/Employees/Add Employee/Import
       Employees/Admin-only Django Admin link), footer with logo, and
       logo added to top navbar
+- [x] Employee Core fields: added Initial (Title/Salutation) and
+      Employee Category (Teaching/Workshop/Administrative/Other); Date
+      Joined made optional; "Full Name" relabeled to "Name" on-screen
+- [x] Contact Details import made discoverable (sidebar + Employee list
+      links) with a downloadable sample Excel template
+- [x] Employee list page: Department/Designation/Status/Employment Type
+      filters, column sorting, and Excel export (selected rows or
+      current filtered view)
 ## Phase 3 — Tasks & Reminders (`apps/tasks`) — COMPLETE
 - [x] Task model: assignee, due date, status, priority
 - [x] Optional linking to a Record or Meeting action item — DEFERRED (those apps don't exist yet; will be added as a small follow-up when Phase 2/4 are built)

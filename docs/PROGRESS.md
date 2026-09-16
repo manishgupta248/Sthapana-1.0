@@ -133,6 +133,52 @@ entries at the top.
 - Git tag: none
 - Notes/deviations from original plan: none — this was an owner-
   requested enhancement, not part of the original phase roadmap.
+### Enhancement — Employee Core Fields, Contact Import Discoverability, List Filters & Excel Export — COMPLETED 2026-09-16
+- Branch: feature-employee-fields-filters-export, merged to main on 2026-09-16
+- What was built (Part A — Core field changes): Added "Initial"
+  (Title/Salutation: Shri/Smt./Kum./Dr./Mr./Mrs./Ms./Other, optional) and
+  "Employee Category" (Teaching/Workshop/Administrative/Other, required)
+  as new fields on Employee, separate from the existing Employment Type
+  field. Date Joined changed from required to optional. "Full Name"
+  field relabeled to "Name" on all forms/pages (internal field name
+  unchanged to limit risk). Excel importer, admin panel, and templates
+  updated to match.
+- What was built (Part B — Contact Details import discoverability): A
+  "Download Sample Template" button added to the Contact Details import
+  page (ready-to-fill .xlsx with correct headers and an example row).
+  "Import Contact Details" links added to the sidebar and the Employee
+  list page (previously built in Step 1.2 but not linked anywhere).
+- What was built (Part C — filters): Department, Designation, Status,
+  and Employment Type dropdown filters added to the Employee list page,
+  usable together with the existing name/ID search box.
+- What was built (Part D — sort & export): Clickable, sortable column
+  headings on the Employee list page; row checkboxes with "select all";
+  an "Export to Excel" button that exports selected rows if any are
+  checked, otherwise everything currently shown after filters/search/
+  sort are applied.
+- Bug found & fixed during this work: a permission-assignment migration
+  (from the Contact Details step) had been silently failing to grant
+  Contact Details permissions to any group, because it ran before
+  Django had created those permissions' database records. This stayed
+  invisible because all earlier testing used a superuser account, which
+  bypasses permission checks. Fixed with a corrective migration that
+  creates the missing permission records first, then reassigns them
+  correctly — this also fixed real (non-superuser) Admin-group access
+  to Contact Details import, not just the new template download.
+- Smoke test performed: Owner confirmed existing test employees display
+  correctly with new blank Initial/default Employee Category; new
+  fields editable and importable via Excel; Contact Details import
+  buttons visible from sidebar and Employee list; sample template
+  downloads and re-imports correctly; Department/Status/etc. filters
+  work individually and combined; column sorting works both directions
+  and persists alongside active filters; Export to Excel respects
+  current filters when nothing is checked, and respects checked rows
+  when some are selected. — Result: PASS
+- Automated tests: 9 new tests (apps/people), all passing (15 total)
+- Git tag: none
+- Notes/deviations from original plan: none beyond the permission-
+  migration bug above, which was found and fixed within this same step
+  rather than deferred.
 
   ### Phase 3 — Tasks & Reminders — COMPLETED 2026-09-14
 - Branch: phase-3-tasks-reminders, merged to main on 2026-09-14
