@@ -1,89 +1,139 @@
 {% extends "base.html" %}
-{% block title %}Documents{% endblock %}
+
+{% block title %}Documents — Sthapana{% endblock %}
+
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h1 class="h3 mb-0">📁 Documents</h1>
+<div class="page-header">
+  <h1>Documents</h1>
   {% if perms.records.add_document %}
-    <a href="{% url 'records:document_upload' %}" class="btn btn-primary">+ Upload Document</a>
+    <a href="{% url 'records:document_upload' %}" class="btn btn-primary">
+      <i class="bi bi-cloud-upload me-1"></i> Upload Document
+    </a>
   {% endif %}
 </div>
 
-<form method="get" class="row g-2 mb-3">
-  <div class="col-md-3">
-    <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search title, description, filename...">
+<form method="get" class="filter-bar">
+  <div class="row g-2 align-items-end">
+    <div class="col-md-3">
+      <label class="form-label">Search</label>
+      <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Title, description, filename...">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Category</label>
+      <select name="category" class="form-select">
+        <option value="">All categories</option>
+        {% for cat in categories %}
+          <option value="{{ cat.id }}" {% if selected_category == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Tag</label>
+      <select name="tag" class="form-select">
+        <option value="">All tags</option>
+        {% for tag in tags %}
+          <option value="{{ tag.id }}" {% if selected_tag == tag.id|stringformat:"s" %}selected{% endif %}>{{ tag.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">From</label>
+      <input type="date" name="date_from" value="{{ date_from }}" class="form-control">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">To</label>
+      <input type="date" name="date_to" value="{{ date_to }}" class="form-control">
+    </div>
+    <div class="col-md-1">
+      <button type="submit" class="btn btn-primary w-100">
+        <i class="bi bi-funnel"></i>
+      </button>
+    </div>
   </div>
-  <div class="col-md-2">
-    <select name="category" class="form-select">
-      <option value="">All categories</option>
-      {% for cat in categories %}
-        <option value="{{ cat.id }}" {% if selected_category == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
-      {% endfor %}
-    </select>
-  </div>
-  <div class="col-md-2">
-    <select name="tag" class="form-select">
-      <option value="">All tags</option>
-      {% for tag in tags %}
-        <option value="{{ tag.id }}" {% if selected_tag == tag.id|stringformat:"s" %}selected{% endif %}>{{ tag.name }}</option>
-      {% endfor %}
-    </select>
-  </div>
-  <div class="col-md-2">
-    <input type="date" name="date_from" value="{{ date_from }}" class="form-control" title="From date">
-  </div>
-  <div class="col-md-2">
-    <input type="date" name="date_to" value="{{ date_to }}" class="form-control" title="To date">
-  </div>
-  <div class="col-md-1">
-    <button type="submit" class="btn btn-outline-secondary w-100">Filter</button>
-  </div>
+  {% if query or selected_category or selected_tag or date_from or date_to %}
+    <div class="mt-2">
+      <a href="{% url 'records:document_list' %}" class="btn btn-sm btn-link ps-0 text-muted">
+        <i class="bi bi-x-circle me-1"></i> Clear all filters
+      </a>
+    </div>
+  {% endif %}
 </form>
 
-{% if messages %}
-  {% for message in messages %}<div class="alert alert-success">{{ message }}</div>{% endfor %}
-{% endif %}
-
 <div class="table-responsive">
-<table class="table table-hover align-middle">
-  <thead class="table-light">
-    <tr>
-      {% for key, label in sort_columns %}{% endfor %}
-      <th><a href="?{{ request.GET.urlencode }}&sort=title&dir={% if sort == 'title' and direction == 'asc' %}desc{% else %}asc{% endif %}" class="text-decoration-none">Title{% if sort == 'title' %} {% if direction == 'asc' %}▲{% else %}▼{% endif %}{% endif %}</a></th>
-      <th><a href="?{{ request.GET.urlencode }}&sort=category&dir={% if sort == 'category' and direction == 'asc' %}desc{% else %}asc{% endif %}" class="text-decoration-none">Category{% if sort == 'category' %} {% if direction == 'asc' %}▲{% else %}▼{% endif %}{% endif %}</a></th>
-      <th>Tags</th>
-      <th><a href="?{{ request.GET.urlencode }}&sort=date&dir={% if sort == 'date' and direction == 'asc' %}desc{% else %}asc{% endif %}" class="text-decoration-none">Document Date{% if sort == 'date' %} {% if direction == 'asc' %}▲{% else %}▼{% endif %}{% endif %}</a></th>
-      <th>Size</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for doc in page_obj %}
-    <tr>
-      <td>{{ doc.title }}</td>
-      <td>{{ doc.category.name }}</td>
-      <td>{% for tag in doc.tags.all %}<span class="badge bg-secondary me-1">{{ tag.name }}</span>{% endfor %}</td>
-      <td>{{ doc.document_date }}</td>
-      <td>{{ doc.file_size_display }}</td>
-      <td class="text-end">
-          <a href="{% url 'records:document_detail' doc.pk %}" class="btn btn-sm btn-outline-secondary">View</a>
-      </td>
-    </tr>
-    {% empty %}
-    <tr><td colspan="6" class="text-center text-muted">No documents found.</td></tr>
-    {% endfor %}
-  </tbody>
-</table>
+  <table class="table table-hover align-middle mb-0">
+    <thead>
+      <tr>
+        <th>
+          <a href="?{{ request.GET.urlencode }}&sort=title&dir={% if sort == 'title' and direction == 'asc' %}desc{% else %}asc{% endif %}" class="text-decoration-none text-muted">
+            Title{% if sort == 'title' %} {% if direction == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+          </a>
+        </th>
+        <th>
+          <a href="?{{ request.GET.urlencode }}&sort=category&dir={% if sort == 'category' and direction == 'asc' %}desc{% else %}asc{% endif %}" class="text-decoration-none text-muted">
+            Category{% if sort == 'category' %} {% if direction == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+          </a>
+        </th>
+        <th>Tags</th>
+        <th>
+          <a href="?{{ request.GET.urlencode }}&sort=date&dir={% if sort == 'date' and direction == 'asc' %}desc{% else %}asc{% endif %}" class="text-decoration-none text-muted">
+            Document Date{% if sort == 'date' %} {% if direction == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+          </a>
+        </th>
+        <th>Size</th>
+        <th style="width: 5rem;"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for doc in page_obj %}
+      <tr>
+        <td class="fw-medium">{{ doc.title }}</td>
+        <td>{{ doc.category.name }}</td>
+        <td>
+          {% for tag in doc.tags.all %}
+            <span class="badge bg-secondary me-1">{{ tag.name }}</span>
+          {% empty %}
+            <span class="text-muted">—</span>
+          {% endfor %}
+        </td>
+        <td>{{ doc.document_date }}</td>
+        <td class="text-muted">{{ doc.file_size_display }}</td>
+        <td class="text-end">
+          <a href="{% url 'records:document_detail' doc.pk %}" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-eye"></i>
+          </a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" class="text-center text-muted py-4">
+          <i class="bi bi-folder2-open display-6 d-block mb-2 opacity-50"></i>
+          No documents found.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
 
 {% if page_obj.has_other_pages %}
-<nav>
-  <ul class="pagination">
+<nav class="mt-3" aria-label="Documents pagination">
+  <ul class="pagination justify-content-center mb-0">
     {% if page_obj.has_previous %}
-      <li class="page-item"><a class="page-link" href="?{{ request.GET.urlencode }}&page={{ page_obj.previous_page_number }}">Previous</a></li>
+      <li class="page-item">
+        <a class="page-link" href="?{{ request.GET.urlencode }}&page={{ page_obj.previous_page_number }}">
+          <i class="bi bi-chevron-left"></i> Previous
+        </a>
+      </li>
     {% endif %}
-    <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+    <li class="page-item disabled">
+      <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    </li>
     {% if page_obj.has_next %}
-      <li class="page-item"><a class="page-link" href="?{{ request.GET.urlencode }}&page={{ page_obj.next_page_number }}">Next</a></li>
+      <li class="page-item">
+        <a class="page-link" href="?{{ request.GET.urlencode }}&page={{ page_obj.next_page_number }}">
+          Next <i class="bi bi-chevron-right"></i>
+        </a>
+      </li>
     {% endif %}
   </ul>
 </nav>

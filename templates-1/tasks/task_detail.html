@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}{{ task.title }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">{{ task.title }}</h1>
+  <div>
+    {% if perms.tasks.change_task %}<a href="{% url 'tasks:task_edit' task.pk %}" class="btn btn-outline-primary">Edit</a>{% endif %}
+    {% if perms.tasks.delete_task %}<a href="{% url 'tasks:task_delete' task.pk %}" class="btn btn-outline-danger">Delete</a>{% endif %}
+  </div>
+</div>
+
+<div class="card p-4" style="max-width: 600px;">
+  <dl class="row mb-0">
+    <dt class="col-sm-4">Assignee</dt><dd class="col-sm-8">{{ task.assignee }}</dd>
+    <dt class="col-sm-4">Due Date</dt>
+    <dd class="col-sm-8">{{ task.due_date }}{% if task.is_overdue %} <span class="badge bg-danger">Overdue</span>{% endif %}</dd>
+    <dt class="col-sm-4">Status</dt><dd class="col-sm-8">{{ task.get_status_display }}</dd>
+    <dt class="col-sm-4">Priority</dt><dd class="col-sm-8">{{ task.get_priority_display }}</dd>
+    <dt class="col-sm-4">Description</dt><dd class="col-sm-8">{{ task.description|default:"—" }}</dd>
+    <dt class="col-sm-4">Link</dt>
+    <dd class="col-sm-8">{% if task.link %}<a href="{{ task.link }}" target="_blank" rel="noopener">{{ task.link }}</a>{% else %}—{% endif %}</dd>
+    <dt class="col-sm-4">Created By</dt><dd class="col-sm-8">{{ task.created_by }}</dd>
+  </dl>
+</div>
+
+<div class="card p-4 mt-4" style="max-width: 600px;">
+  <h2 class="h5">Attachments</h2>
+  {% if task.attachments.all %}
+    <ul class="mb-0">
+      {% for attachment in task.attachments.all %}<li><a href="{{ attachment.file.url }}" target="_blank">{{ attachment.file.name }}</a></li>{% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-muted mb-0">No attachments on file.</p>
+  {% endif %}
+</div>
+
+<a href="{% url 'tasks:task_list' %}" class="btn btn-link ps-0 mt-3">&larr; Back to list</a>
+{% endblock %}

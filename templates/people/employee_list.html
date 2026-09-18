@@ -1,117 +1,144 @@
 {% extends "base.html" %}
 {% load people_extras %}
 
-{% block title %}Employees{% endblock %}
+{% block title %}Employees — Sthapana{% endblock %}
+
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h1 class="h3 mb-0">Employees</h1>
-  <div>
+<div class="page-header">
+  <h1>Employees</h1>
+  <div class="d-flex flex-wrap gap-2">
     {% if perms.people.add_employee %}
-      <a href="{% url 'people:employee_add' %}" class="btn btn-primary">+ Add Employee</a>
-      <a href="{% url 'people:employee_import' %}" class="btn btn-outline-secondary">Import from Excel</a>
+      <a href="{% url 'people:employee_add' %}" class="btn btn-primary">
+        <i class="bi bi-person-plus me-1"></i> Add Employee
+      </a>
+      <a href="{% url 'people:employee_import' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-file-earmark-arrow-up me-1"></i> Import from Excel
+      </a>
       {% if perms.people.add_contactdetails and perms.people.change_contactdetails %}
-        <a href="{% url 'people:contact_import' %}" class="btn btn-outline-secondary">Import Contact Details</a>
+        <a href="{% url 'people:contact_import' %}" class="btn btn-outline-secondary">
+          <i class="bi bi-card-list me-1"></i> Import Contacts
+        </a>
       {% endif %}
     {% endif %}
   </div>
 </div>
 
-<form method="get" class="row g-2 mb-3 align-items-end">
-  <div class="col-sm-3">
-    <label class="form-label small mb-1">Search</label>
-    <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Name or ID...">
-  </div>
-  <div class="col-sm-2">
-    <label class="form-label small mb-1">Department</label>
-    <select name="department" class="form-select">
-      <option value="">All</option>
-      {% for dept in departments %}
-        <option value="{{ dept.pk }}" {% if selected_department == dept.pk|stringformat:"s" %}selected{% endif %}>{{ dept.name }}</option>
-      {% endfor %}
-    </select>
-  </div>
-  <div class="col-sm-2">
-    <label class="form-label small mb-1">Designation</label>
-    <select name="designation" class="form-select">
-      <option value="">All</option>
-      {% for desig in designations %}
-        <option value="{{ desig.pk }}" {% if selected_designation == desig.pk|stringformat:"s" %}selected{% endif %}>{{ desig.name }}</option>
-      {% endfor %}
-    </select>
-  </div>
-  <div class="col-sm-2">
-    <label class="form-label small mb-1">Status</label>
-    <select name="status" class="form-select">
-      <option value="">All</option>
-      {% for code, label in status_choices %}
-        <option value="{{ code }}" {% if selected_status == code %}selected{% endif %}>{{ label }}</option>
-      {% endfor %}
-    </select>
-  </div>
-  <div class="col-sm-2">
-    <label class="form-label small mb-1">Employment Type</label>
-    <select name="employment_type" class="form-select">
-      <option value="">All</option>
-      {% for code, label in employment_type_choices %}
-        <option value="{{ code }}" {% if selected_employment_type == code %}selected{% endif %}>{{ label }}</option>
-      {% endfor %}
-    </select>
-  </div>
-  <div class="col-sm-1">
-    <button class="btn btn-primary w-100" type="submit">Filter</button>
+<form method="get" class="filter-bar">
+  <div class="row g-2 align-items-end">
+    <div class="col-sm-3">
+      <label class="form-label">Search</label>
+      <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Name or ID...">
+    </div>
+    <div class="col-sm-2">
+      <label class="form-label">Department</label>
+      <select name="department" class="form-select">
+        <option value="">All</option>
+        {% for dept in departments %}
+          <option value="{{ dept.pk }}" {% if selected_department == dept.pk|stringformat:"s" %}selected{% endif %}>{{ dept.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-sm-2">
+      <label class="form-label">Designation</label>
+      <select name="designation" class="form-select">
+        <option value="">All</option>
+        {% for desig in designations %}
+          <option value="{{ desig.pk }}" {% if selected_designation == desig.pk|stringformat:"s" %}selected{% endif %}>{{ desig.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-sm-2">
+      <label class="form-label">Status</label>
+      <select name="status" class="form-select">
+        <option value="">All</option>
+        {% for code, label in status_choices %}
+          <option value="{{ code }}" {% if selected_status == code %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-sm-2">
+      <label class="form-label">Employment Type</label>
+      <select name="employment_type" class="form-select">
+        <option value="">All</option>
+        {% for code, label in employment_type_choices %}
+          <option value="{{ code }}" {% if selected_employment_type == code %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-sm-1">
+      <button class="btn btn-primary w-100" type="submit">
+        <i class="bi bi-funnel"></i>
+      </button>
+    </div>
   </div>
   {% if query or selected_department or selected_designation or selected_status or selected_employment_type %}
-    <div class="col-12">
-      <a href="{% url 'people:employee_list' %}" class="btn btn-sm btn-link ps-0">Clear all filters</a>
+    <div class="mt-2">
+      <a href="{% url 'people:employee_list' %}" class="btn btn-sm btn-link ps-0 text-muted">
+        <i class="bi bi-x-circle me-1"></i> Clear all filters
+      </a>
     </div>
   {% endif %}
 </form>
-
-{% if messages %}
-  {% for message in messages %}<div class="alert alert-success">{{ message }}</div>{% endfor %}
-{% endif %}
 
 <form method="get" action="{% url 'people:employee_export' %}">
   {% for key, value in request.GET.items %}
     <input type="hidden" name="{{ key }}" value="{{ value }}">
   {% endfor %}
 
-  <div class="d-flex justify-content-between align-items-center mb-2">
-    <span class="text-muted small">Check specific rows to export only those, or leave all unchecked to export everything currently shown.</span>
-    <button type="submit" class="btn btn-sm btn-success">Export to Excel</button>
+  <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+    <span class="text-muted small">
+      <i class="bi bi-info-circle me-1"></i>
+      Check specific rows to export only those, or leave all unchecked to export everything currently shown.
+    </span>
+    <button type="submit" class="btn btn-sm btn-success">
+      <i class="bi bi-download me-1"></i> Export to Excel
+    </button>
   </div>
 
   <div class="table-responsive">
-  <table class="table table-hover align-middle">
-    <thead class="table-light">
-      <tr>
-        <th><input type="checkbox" id="select-all-checkbox"></th>
-        <th><a href="{% sort_url 'employee_id' %}" class="text-decoration-none text-dark">Employee ID{% sort_indicator 'employee_id' %}</a></th>
-        <th><a href="{% sort_url 'full_name' %}" class="text-decoration-none text-dark">Name{% sort_indicator 'full_name' %}</a></th>
-        <th><a href="{% sort_url 'department' %}" class="text-decoration-none text-dark">Department{% sort_indicator 'department' %}</a></th>
-        <th><a href="{% sort_url 'designation' %}" class="text-decoration-none text-dark">Designation{% sort_indicator 'designation' %}</a></th>
-        <th><a href="{% sort_url 'status' %}" class="text-decoration-none text-dark">Status{% sort_indicator 'status' %}</a></th>
-        <th><a href="{% sort_url 'employment_type' %}" class="text-decoration-none text-dark">Employment Type{% sort_indicator 'employment_type' %}</a></th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for employee in employees %}
-      <tr>
-        <td><input type="checkbox" name="selected_ids" value="{{ employee.pk }}" class="row-checkbox"></td>
-        <td>{{ employee.employee_id }}</td>
-        <td><a href="{% url 'people:employee_detail' employee.pk %}">{{ employee.full_name }}</a></td>
-        <td>{{ employee.department.name }}</td>
-        <td>{{ employee.designation.name }}</td>
-        <td><span class="badge bg-{% if employee.status == 'ACTIVE' %}success{% else %}secondary{% endif %}">{{ employee.get_status_display }}</span></td>
-        <td>{{ employee.get_employment_type_display }}</td>
-        <td class="text-end"><a href="{% url 'people:employee_detail' employee.pk %}" class="btn btn-sm btn-outline-secondary">View</a></td>
-      </tr>
-      {% empty %}
-      <tr><td colspan="8" class="text-center text-muted">No employees yet.</td></tr>
-      {% endfor %}
-    </tbody>
-  </table>
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th style="width: 2.5rem;"><input type="checkbox" id="select-all-checkbox" class="form-check-input"></th>
+          <th><a href="{% sort_url 'employee_id' %}" class="text-decoration-none text-muted">Employee ID{% sort_indicator 'employee_id' %}</a></th>
+          <th><a href="{% sort_url 'full_name' %}" class="text-decoration-none text-muted">Name{% sort_indicator 'full_name' %}</a></th>
+          <th><a href="{% sort_url 'department' %}" class="text-decoration-none text-muted">Department{% sort_indicator 'department' %}</a></th>
+          <th><a href="{% sort_url 'designation' %}" class="text-decoration-none text-muted">Designation{% sort_indicator 'designation' %}</a></th>
+          <th><a href="{% sort_url 'status' %}" class="text-decoration-none text-muted">Status{% sort_indicator 'status' %}</a></th>
+          <th><a href="{% sort_url 'employment_type' %}" class="text-decoration-none text-muted">Employment Type{% sort_indicator 'employment_type' %}</a></th>
+          <th style="width: 5rem;"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for employee in employees %}
+        <tr>
+          <td><input type="checkbox" name="selected_ids" value="{{ employee.pk }}" class="row-checkbox form-check-input"></td>
+          <td class="text-muted">{{ employee.employee_id }}</td>
+          <td><a href="{% url 'people:employee_detail' employee.pk %}" class="fw-medium">{{ employee.full_name }}</a></td>
+          <td>{{ employee.department.name }}</td>
+          <td>{{ employee.designation.name }}</td>
+          <td>
+            <span class="badge bg-{% if employee.status == 'ACTIVE' %}success{% else %}secondary{% endif %}">
+              {{ employee.get_status_display }}
+            </span>
+          </td>
+          <td>{{ employee.get_employment_type_display }}</td>
+          <td class="text-end">
+            <a href="{% url 'people:employee_detail' employee.pk %}" class="btn btn-sm btn-outline-secondary">
+              <i class="bi bi-eye"></i>
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="8" class="text-center text-muted py-4">
+            <i class="bi bi-people display-6 d-block mb-2 opacity-50"></i>
+            No employees yet.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 </form>
 

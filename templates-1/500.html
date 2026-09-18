@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Something went wrong — Sthapana{% endblock %}
+{% block content %}
+<div class="auth-wrapper">
+  <div class="auth-card text-center">
+    <h1 class="auth-title">Something went wrong</h1>
+    <p class="auth-subtitle">
+      An unexpected error occurred. It has been logged, and you can try again
+      or contact your administrator if the problem continues.
+    </p>
+    <a href="{% url 'dashboard' %}" class="btn btn-primary">Return to Dashboard</a>
+  </div>
+</div>
+{% endblock %}
+```
+
+**4. Create:** `D:\Sthapana\backups\.gitkeep` — an empty file, just so the empty `backups/` folder exists in the project structure even though its actual contents are git-ignored:
+```

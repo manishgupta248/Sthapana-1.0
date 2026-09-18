@@ -1,15 +1,19 @@
 {% extends "base.html" %}
-{% block title %}Upload Document{% endblock %}
-{% block content %}
-<h1 class="h3 mb-4">📁 Upload Document</h1>
 
-{% if messages %}
-  {% for message in messages %}<div class="alert alert-success">{{ message }}</div>{% endfor %}
-{% endif %}
+{% block title %}Upload Document — Sthapana{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Upload Document</h1>
+  <a href="{% url 'records:document_list' %}" class="btn btn-outline-secondary">
+    <i class="bi bi-arrow-left me-1"></i> Back to list
+  </a>
+</div>
 
 {% if show_duplicate_warning %}
-  <div class="alert alert-warning">
-    <strong>⚠️ Possible duplicate.</strong> {{ similar_documents|length }} existing document(s) have a similar title:
+  <div class="alert alert-warning" style="max-width: 700px;">
+    <strong><i class="bi bi-exclamation-triangle me-1"></i> Possible duplicate.</strong>
+    {{ similar_documents|length }} existing document(s) have a similar title:
     <ul class="mb-2 mt-2">
       {% for doc in similar_documents %}
         <li>{{ doc.title }} ({{ doc.category.name }}, {{ doc.document_date }})</li>
@@ -19,52 +23,59 @@
   </div>
 {% endif %}
 
-<form method="post" enctype="multipart/form-data" style="max-width: 700px;">
-  {% csrf_token %}
+<form method="post" enctype="multipart/form-data" class="card" style="max-width: 700px;">
+  <div class="card-body">
+    {% csrf_token %}
 
-  <div class="mb-3">
-    <label class="form-label">{{ form.title.label }}</label>
-    {{ form.title }}
-    {% if form.title.errors %}<div class="text-danger small">{{ form.title.errors }}</div>{% endif %}
-  </div>
-
-  <div class="mb-3">
-    <label class="form-label">Category</label>
-    {{ form.category }}
-    {% if form.category.errors %}<div class="text-danger small">{{ form.category.errors }}</div>{% endif %}
-  </div>
-
-  <div class="mb-3">
-    <label class="form-label">Document Date</label>
-    {{ form.document_date }}
-    <div class="form-text">Leave blank to use today's date.</div>
-  </div>
-
-  <div class="mb-3">
-    <label class="form-label">Tags</label>
-    {{ form.tags }}
-    <div class="form-text">{{ form.tags.help_text }}</div>
-  </div>
-
-  <div class="mb-3">
-    <label class="form-label">Description / Notes</label>
-    {{ form.description }}
-  </div>
-
-  <div class="mb-3">
-    <label class="form-label">{{ form.file.label }}</label>
-    {{ form.file }}
-    {% if form.file.errors %}<div class="text-danger small">{{ form.file.errors }}</div>{% endif %}
-    <div class="form-text">Allowed: PDF, Word, Excel, PowerPoint, images, text. Max {{ MAX_DOCUMENT_UPLOAD_MB }} MB.</div>
-  </div>
-
-  {% if show_duplicate_warning %}
-    <div class="form-check mb-3">
-      <input type="checkbox" name="confirm_duplicate" value="true" class="form-check-input" id="confirmDuplicate">
-      <label class="form-check-label" for="confirmDuplicate">Yes, this is a genuinely new document — save anyway.</label>
+    <div class="mb-3">
+      <label class="form-label">{{ form.title.label }}</label>
+      {{ form.title }}
+      {% if form.title.errors %}<div class="text-danger small mt-1">{{ form.title.errors }}</div>{% endif %}
     </div>
-  {% endif %}
 
-  <button type="submit" class="btn btn-primary">Upload</button>
+    <div class="mb-3">
+      <label class="form-label">Category</label>
+      {{ form.category }}
+      {% if form.category.errors %}<div class="text-danger small mt-1">{{ form.category.errors }}</div>{% endif %}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Document Date</label>
+      {{ form.document_date }}
+      <div class="form-text">Leave blank to use today's date.</div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Tags</label>
+      {{ form.tags }}
+      <div class="form-text">{{ form.tags.help_text }}</div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Description / Notes</label>
+      {{ form.description }}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">{{ form.file.label }}</label>
+      {{ form.file }}
+      {% if form.file.errors %}<div class="text-danger small mt-1">{{ form.file.errors }}</div>{% endif %}
+      <div class="form-text">Allowed: PDF, Word, Excel, PowerPoint, images, text. Max {{ MAX_DOCUMENT_UPLOAD_MB }} MB.</div>
+    </div>
+
+    {% if show_duplicate_warning %}
+      <div class="form-check mb-3">
+        <input type="checkbox" name="confirm_duplicate" value="true" class="form-check-input" id="confirmDuplicate">
+        <label class="form-check-label" for="confirmDuplicate">Yes, this is a genuinely new document — save anyway.</label>
+      </div>
+    {% endif %}
+
+    <div class="d-flex gap-2 mt-4">
+      <button type="submit" class="btn btn-primary">
+        <i class="bi bi-cloud-upload me-1"></i> Upload
+      </button>
+      <a href="{% url 'records:document_list' %}" class="btn btn-outline-secondary">Cancel</a>
+    </div>
+  </div>
 </form>
 {% endblock %}

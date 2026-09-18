@@ -1,35 +1,70 @@
 {% extends "base.html" %}
-{% block title %}Import Employees from Excel{% endblock %}
-{% block content %}
-<h1 class="h3 mb-4">Import Employees from Excel</h1>
 
-<div class="card p-4 mb-4" style="max-width: 700px;">
-  <p><code>Employee ID | Name | Department | Designation | Status | Employment Type | Employee Category</code></p>
-  <p>Optional columns: <code>Initial | Date Joined</code></p>
-  <ul>
-    <li><strong>Department</strong> and <strong>Designation</strong> must already exist (add them via the admin panel first) — spelling must match.</li>
-    <li><strong>Status</strong> must be one of: Active, On Leave, Suspended, Retired, Resigned, Deceased, Transferred.</li>
-    <li><strong>Employment Type</strong> must be one of: Regular, Contract, HKRNL, Deputation, Guest Faculty, Other.</li>
-    <li><strong>Employee Category</strong> must be one of: Teaching, Workshop, Administrative, Other.</li>
-    <li><strong>Initial</strong> (optional), if provided, must be one of: Shri, Smt., Kum., Dr., Mr., Mrs., Ms., Other.</li>
-    <li><strong>Date Joined</strong> (optional) should be formatted as a Date in Excel if provided.</li>
-  </ul>
-  <p class="text-muted">Note: the column heading changed from "Full Name" to "Name" — please update any older template files you've saved.</p>
+{% block title %}Import Employees — Sthapana{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Import Employees from Excel</h1>
+  <a href="{% url 'people:employee_list' %}" class="btn btn-outline-secondary">
+    <i class="bi bi-arrow-left me-1"></i> Back to list
+  </a>
 </div>
 
-<form method="post" enctype="multipart/form-data" class="card p-4" style="max-width: 500px;">
-  {% csrf_token %}
-  <div class="mb-3">{{ form.excel_file.label_tag }}{{ form.excel_file }}</div>
-  <button type="submit" class="btn btn-primary">Upload and Import</button>
-</form>
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-body">
+        <h2 class="h6 text-uppercase text-muted mb-3" style="letter-spacing: 0.05em; font-size: 0.7rem;">
+          <i class="bi bi-info-circle me-1"></i> Required columns
+        </h2>
+        <p class="mb-2"><code class="small">Employee ID | Name | Department | Designation | Status | Employment Type | Employee Category</code></p>
+        <p class="text-muted small mb-3">Optional: <code>Initial | Date Joined</code></p>
+        <ul class="small text-muted mb-0">
+          <li><strong>Department</strong> and <strong>Designation</strong> must already exist (add via admin) — spelling must match.</li>
+          <li><strong>Status</strong>: Active, On Leave, Suspended, Retired, Resigned, Deceased, Transferred.</li>
+          <li><strong>Employment Type</strong>: Regular, Contract, HKRNL, Deputation, Guest Faculty, Other.</li>
+          <li><strong>Employee Category</strong>: Teaching, Workshop, Administrative, Other.</li>
+          <li><strong>Initial</strong> (optional): Shri, Smt., Kum., Dr., Mr., Mrs., Ms., Other.</li>
+          <li><strong>Date Joined</strong> (optional) should be a Date in Excel.</li>
+        </ul>
+        <p class="text-muted small mt-3 mb-0">
+          Note: the column heading changed from "Full Name" to "Name" — update any older templates.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card">
+      <div class="card-body">
+        <h2 class="h6 text-uppercase text-muted mb-3" style="letter-spacing: 0.05em; font-size: 0.7rem;">
+          <i class="bi bi-file-earmark-arrow-up me-1"></i> Upload file
+        </h2>
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="mb-3">
+            {{ form.excel_file.label_tag }}
+            {{ form.excel_file }}
+          </div>
+          <button type="submit" class="btn btn-primary w-100">
+            <i class="bi bi-upload me-1"></i> Upload and Import
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% if results %}
 <div class="mt-4" style="max-width: 700px;">
-  <div class="alert alert-success">{{ results.success_count }} employee(s) imported successfully.</div>
+  <div class="alert alert-success">
+    <i class="bi bi-check-circle me-1"></i>
+    {{ results.success_count }} employee(s) imported successfully.
+  </div>
   {% if results.errors %}
     <div class="alert alert-warning">
       <strong>{{ results.errors|length }} row(s) were skipped:</strong>
-      <ul class="mb-0">{% for error in results.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+      <ul class="mb-0 mt-2">{% for error in results.errors %}<li>{{ error }}</li>{% endfor %}</ul>
     </div>
   {% endif %}
 </div>

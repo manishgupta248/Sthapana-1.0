@@ -1,22 +1,24 @@
 {% extends "base.html" %}
-{% block title %}Send Telegram Message{% endblock %}
+
+{% block title %}Send Telegram Message — Sthapana{% endblock %}
+
 {% block content %}
-<h1 class="h3 mb-4">📨 Send Telegram Message</h1>
+<div class="page-header">
+  <h1>Send Telegram Message</h1>
+</div>
 
-{% if messages %}
-  {% for message in messages %}
-    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %}">{{ message }}</div>
-  {% endfor %}
-{% endif %}
-
-<form method="post" class="mt-3" style="max-width: 600px;">
-  {% csrf_token %}
-  <div class="mb-3">
-    <label for="{{ form.message.id_for_label }}" class="form-label">{{ form.message.label }}</label>
-    {{ form.message }}
-    <div class="form-text">{{ form.message.help_text }}</div>
-    {% if form.message.errors %}<div class="text-danger small mt-1">{{ form.message.errors }}</div>{% endif %}
+<form method="post" class="card" style="max-width: 600px;">
+  <div class="card-body">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="{{ form.message.id_for_label }}" class="form-label">{{ form.message.label }}</label>
+      {{ form.message }}
+      <div class="form-text">{{ form.message.help_text }}</div>
+      {% if form.message.errors %}<div class="text-danger small mt-1">{{ form.message.errors }}</div>{% endif %}
+    </div>
+    <button type="submit" class="btn btn-primary">
+      <i class="bi bi-send me-1"></i> Send
+    </button>
   </div>
-  <button type="submit" class="btn btn-primary">Send</button>
 </form>
 {% endblock %}

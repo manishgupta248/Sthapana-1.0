@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Delete Document{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">Delete Document</h1>
+<p>Are you sure you want to delete <strong>{{ document.title }}</strong>?</p>
+<p class="text-muted">The file will be moved to the trash folder, not permanently erased. It can be restored via the admin panel if needed.</p>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger">Yes, Delete</button>
+  <a href="{% url 'records:document_detail' document.pk %}" class="btn btn-outline-secondary">Cancel</a>
+</form>
+{% endblock %}

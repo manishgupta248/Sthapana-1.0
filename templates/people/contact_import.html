@@ -1,31 +1,66 @@
 {% extends "base.html" %}
-{% block title %}Import Contact Details from Excel{% endblock %}
-{% block content %}
-<h1 class="h3 mb-4">Import Contact Details from Excel</h1>
 
-<div class="card p-4 mb-4" style="max-width: 750px;">
-  <p>Your Excel file's first row must contain these exact column headings (any order):</p>
-  <p><code>Employee ID | Personal Mobile | Alternate Mobile | Personal Email | Official Email | Current Address | Permanent Address | Emergency Contact Name | Emergency Contact Phone | Emergency Contact Relation</code></p>
-  <ul>
-    <li><strong>Employee ID</strong> must already exist in the system — this import only adds/updates contact info, it never creates new employees.</li>
-    <li>If an employee already has contact details on file, importing their row again will <strong>update</strong> the existing record, not duplicate it.</li>
-  </ul>
+{% block title %}Import Contact Details — Sthapana{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Import Contact Details from Excel</h1>
+  <a href="{% url 'people:employee_list' %}" class="btn btn-outline-secondary">
+    <i class="bi bi-arrow-left me-1"></i> Back to list
+  </a>
 </div>
 
-<a href="{% url 'people:contact_import_template' %}" class="btn btn-outline-secondary mb-4">Download Sample Template</a>
-<form method="post" enctype="multipart/form-data" class="card p-4" style="max-width: 500px;">
-  {% csrf_token %}
-  <div class="mb-3">{{ form.excel_file.label_tag }}{{ form.excel_file }}</div>
-  <button type="submit" class="btn btn-primary">Upload and Import</button>
-</form>
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-body">
+        <h2 class="h6 text-uppercase text-muted mb-3" style="letter-spacing: 0.05em; font-size: 0.7rem;">
+          <i class="bi bi-info-circle me-1"></i> Required columns
+        </h2>
+        <p class="small mb-3">First row must contain these exact headings (any order):</p>
+        <p class="mb-3"><code class="small">Employee ID | Personal Mobile | Alternate Mobile | Personal Email | Official Email | Current Address | Permanent Address | Emergency Contact Name | Emergency Contact Phone | Emergency Contact Relation</code></p>
+        <ul class="small text-muted mb-0">
+          <li><strong>Employee ID</strong> must already exist — this import only adds/updates contact info.</li>
+          <li>If an employee already has contact details, re-importing updates the existing record.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card">
+      <div class="card-body">
+        <h2 class="h6 text-uppercase text-muted mb-3" style="letter-spacing: 0.05em; font-size: 0.7rem;">
+          <i class="bi bi-file-earmark-arrow-up me-1"></i> Upload file
+        </h2>
+        <a href="{% url 'people:contact_import_template' %}" class="btn btn-outline-secondary btn-sm mb-3">
+          <i class="bi bi-download me-1"></i> Download Sample Template
+        </a>
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="mb-3">
+            {{ form.excel_file.label_tag }}
+            {{ form.excel_file }}
+          </div>
+          <button type="submit" class="btn btn-primary w-100">
+            <i class="bi bi-upload me-1"></i> Upload and Import
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% if results %}
 <div class="mt-4" style="max-width: 750px;">
-  <div class="alert alert-success">{{ results.success_count }} contact record(s) saved successfully.</div>
+  <div class="alert alert-success">
+    <i class="bi bi-check-circle me-1"></i>
+    {{ results.success_count }} contact record(s) saved successfully.
+  </div>
   {% if results.errors %}
     <div class="alert alert-warning">
       <strong>{{ results.errors|length }} row(s) were skipped:</strong>
-      <ul class="mb-0">{% for error in results.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+      <ul class="mb-0 mt-2">{% for error in results.errors %}<li>{{ error }}</li>{% endfor %}</ul>
     </div>
   {% endif %}
 </div>

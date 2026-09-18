@@ -1,42 +1,84 @@
 {% extends "base.html" %}
-{% block title %}{{ document.title }}{% endblock %}
+
+{% block title %}{{ document.title }} — Sthapana{% endblock %}
+
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h1 class="h3 mb-0">{{ document.title }}</h1>
-  <div>
-    {% if perms.records.change_document %}<a href="{% url 'records:document_edit' document.pk %}" class="btn btn-outline-secondary">Edit</a>{% endif %}
-    {% if perms.records.delete_document %}<a href="{% url 'records:document_delete' document.pk %}" class="btn btn-outline-danger">Delete</a>{% endif %}
-    <a href="{% url 'records:document_list' %}" class="btn btn-outline-secondary">Back to List</a>
+<div class="page-header">
+  <h1>{{ document.title }}</h1>
+  <div class="d-flex flex-wrap gap-2">
+    {% if perms.records.change_document %}
+      <a href="{% url 'records:document_edit' document.pk %}" class="btn btn-outline-primary">
+        <i class="bi bi-pencil me-1"></i> Edit
+      </a>
+    {% endif %}
+    {% if perms.records.delete_document %}
+      <a href="{% url 'records:document_delete' document.pk %}" class="btn btn-outline-danger">
+        <i class="bi bi-trash me-1"></i> Delete
+      </a>
+    {% endif %}
+    <a href="{% url 'records:document_list' %}" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left me-1"></i> Back
+    </a>
   </div>
 </div>
 
-{% if messages %}
-  {% for message in messages %}<div class="alert alert-success">{{ message }}</div>{% endfor %}
-{% endif %}
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-body">
+        <h2 class="h6 text-uppercase text-muted mb-3" style="letter-spacing: 0.05em; font-size: 0.7rem;">
+          <i class="bi bi-file-earmark-text me-1"></i> Document Info
+        </h2>
+        <dl class="row mb-0">
+          <dt class="col-sm-5 text-muted fw-normal">Category</dt>
+          <dd class="col-sm-7">{{ document.category.name }}</dd>
+          <dt class="col-sm-5 text-muted fw-normal">Tags</dt>
+          <dd class="col-sm-7">
+            {% for tag in document.tags.all %}
+              <span class="badge bg-secondary me-1">{{ tag.name }}</span>
+            {% empty %}—{% endfor %}
+          </dd>
+          <dt class="col-sm-5 text-muted fw-normal">Document Date</dt>
+          <dd class="col-sm-7">{{ document.document_date }}</dd>
+          <dt class="col-sm-5 text-muted fw-normal">Description</dt>
+          <dd class="col-sm-7">{{ document.description|default:"—" }}</dd>
+          <dt class="col-sm-5 text-muted fw-normal">Original Filename</dt>
+          <dd class="col-sm-7">{{ document.original_filename }}</dd>
+          <dt class="col-sm-5 text-muted fw-normal">File Type</dt>
+          <dd class="col-sm-7">{{ document.file_type|upper }}</dd>
+          <dt class="col-sm-5 text-muted fw-normal">Size</dt>
+          <dd class="col-sm-7">{{ document.file_size_display }}</dd>
+          <dt class="col-sm-5 text-muted fw-normal">Uploaded By</dt>
+          <dd class="col-sm-7">{{ document.uploaded_by }}</dd>
+          <dt class="col-sm-5 text-muted fw-normal">Uploaded At</dt>
+          <dd class="col-sm-7">{{ document.uploaded_at }}</dd>
+        </dl>
+      </div>
+    </div>
 
-<table class="table w-auto">
-  <tr><th>Category</th><td>{{ document.category.name }}</td></tr>
-  <tr><th>Tags</th><td>{% for tag in document.tags.all %}<span class="badge bg-secondary me-1">{{ tag.name }}</span>{% empty %}—{% endfor %}</td></tr>
-  <tr><th>Document Date</th><td>{{ document.document_date }}</td></tr>
-  <tr><th>Description</th><td>{{ document.description|default:"—" }}</td></tr>
-  <tr><th>Original Filename</th><td>{{ document.original_filename }}</td></tr>
-  <tr><th>File Type</th><td>{{ document.file_type|upper }}</td></tr>
-  <tr><th>Size</th><td>{{ document.file_size_display }}</td></tr>
-  <tr><th>Uploaded By</th><td>{{ document.uploaded_by }}</td></tr>
-  <tr><th>Uploaded At</th><td>{{ document.uploaded_at }}</td></tr>
-</table>
-
-<a href="{% url 'records:document_download' document.pk %}" class="btn btn-primary mb-3" target="_blank">
-  {% if previewable %}👁️ View{% else %}⬇️ Download{% endif %}
-</a>
-
-{% if previewable %}
-  <div class="border rounded p-2" style="max-width: 800px;">
-    {% if document.file_type == 'pdf' %}
-      <embed src="{% url 'records:document_download' document.pk %}" type="application/pdf" width="100%" height="600px">
-    {% else %}
-      <img src="{% url 'records:document_download' document.pk %}" class="img-fluid" alt="{{ document.title }}">
-    {% endif %}
+    <div class="mt-3">
+      <a href="{% url 'records:document_download' document.pk %}" class="btn btn-primary" target="_blank">
+        {% if previewable %}
+          <i class="bi bi-eye me-1"></i> View
+        {% else %}
+          <i class="bi bi-download me-1"></i> Download
+        {% endif %}
+      </a>
+    </div>
   </div>
-{% endif %}
+
+  {% if previewable %}
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-body p-2">
+        {% if document.file_type == 'pdf' %}
+          <embed src="{% url 'records:document_download' document.pk %}" type="application/pdf" width="100%" height="600px" class="rounded">
+        {% else %}
+          <img src="{% url 'records:document_download' document.pk %}" class="img-fluid rounded" alt="{{ document.title }}">
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
 {% endblock %}

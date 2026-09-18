@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}{{ employee.full_name }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">{{ employee.full_name }}</h1>
+  <div>
+    {% if perms.people.change_employee %}<a href="{% url 'people:employee_edit' employee.pk %}" class="btn btn-outline-primary">Edit</a>{% endif %}
+    {% if perms.people.delete_employee %}<a href="{% url 'people:employee_delete' employee.pk %}" class="btn btn-outline-danger">Delete</a>{% endif %}
+  </div>
+</div>
+
+<div class="card p-4" style="max-width: 600px;">
+  <dl class="row mb-0">
+    <dt class="col-sm-4">Employee ID</dt><dd class="col-sm-8">{{ employee.employee_id }}</dd>
+    <dt class="col-sm-4">Initial</dt><dd class="col-sm-8">{{ employee.get_initial_display|default:"—" }}</dd>
+    <dt class="col-sm-4">Department</dt><dd class="col-sm-8">{{ employee.department.name }}</dd>
+    <dt class="col-sm-4">Designation</dt><dd class="col-sm-8">{{ employee.designation.name }}</dd>
+    <dt class="col-sm-4">Status</dt><dd class="col-sm-8">{{ employee.get_status_display }}</dd>
+    <dt class="col-sm-4">Date Joined</dt><dd class="col-sm-8">{{ employee.date_joined|default:"—" }}</dd>
+    <dt class="col-sm-4">Employment Type</dt><dd class="col-sm-8">{{ employee.get_employment_type_display }}</dd>
+    <dt class="col-sm-4">Employee Category</dt><dd class="col-sm-8">{{ employee.get_employee_category_display }}</dd>
+  </dl>
+</div>
+
+<div class="card p-4 mt-4" style="max-width: 600px;">
+  <h2 class="h5">Contact Details</h2>
+  {% if employee.contact_details %}
+    <dl class="row mb-2">
+      <dt class="col-sm-4">Personal Mobile</dt><dd class="col-sm-8">{{ employee.contact_details.personal_mobile }}</dd>
+      <dt class="col-sm-4">Official Email</dt><dd class="col-sm-8">{{ employee.contact_details.official_email|default:"—" }}</dd>
+      <dt class="col-sm-4">Current Address</dt><dd class="col-sm-8">{{ employee.contact_details.current_address }}</dd>
+      <dt class="col-sm-4">Emergency Contact</dt><dd class="col-sm-8">{{ employee.contact_details.emergency_contact_name }} ({{ employee.contact_details.emergency_contact_relation }}) — {{ employee.contact_details.emergency_contact_phone }}</dd>
+    </dl>
+    <a href="{% url 'people:contact_details_edit' employee.pk %}" class="btn btn-sm btn-outline-primary">Edit Contact Details</a>
+    {% if perms.people.delete_contactdetails %}
+      <a href="{% url 'people:contact_details_delete' employee.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+    {% endif %}
+  {% else %}
+    <p class="text-muted">No contact details on file yet.</p>
+    <a href="{% url 'people:contact_details_edit' employee.pk %}" class="btn btn-sm btn-primary">Add Contact Details</a>
+  {% endif %}
+</div>
+
+<p class="mt-4 text-muted">Personal information, qualifications, and other records will appear here in later steps.</p>
+<a href="{% url 'people:employee_list' %}" class="btn btn-link ps-0">&larr; Back to list</a>
+{% endblock %}

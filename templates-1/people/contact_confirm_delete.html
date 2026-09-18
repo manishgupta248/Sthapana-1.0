@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Delete Contact Details{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">Delete Contact Details</h1>
+<div class="alert alert-danger" style="max-width: 600px;">
+  Are you sure you want to permanently delete the contact details for <strong>{{ employee.full_name }}</strong>? This cannot be undone.
+</div>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger">Yes, delete permanently</button>
+  <a href="{% url 'people:employee_detail' employee.pk %}" class="btn btn-link">Cancel</a>
+</form>
+{% endblock %}
