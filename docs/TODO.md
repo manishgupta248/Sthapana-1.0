@@ -99,11 +99,19 @@ explicitly reopens this part of the roadmap.
 - [ ] Owner-tested backup restore drill, using real data
 - [ ] Full Phase 1 documentation and git close-out
 
-## Phase 2 — Office Records: Notices & Circulars (`apps/records`)
-- [ ] Inward/Outward register model (diary number, direction, date, subject)
-- [ ] File upload handling (media folder structure, file type validation)
-- [ ] List/search/filter by date, subject, department
-- [ ] Minimal automated tests
+## Phase 2 — Office Records & Document Management (`apps/records`) — COMPLETE
+*(Redefined from the original Inward/Outward-register concept — see DECISIONS.md #37)*
+- [x] DocumentCategory (managed lookup, mirrors physical folders) and Tag (free-form, reused case-insensitively) models
+- [x] Document model: title, category, tags, document date (defaults to today), description, file, auto-filled file metadata, uploader, soft-delete fields; full change history
+- [x] Storage kept outside the project/git folder (D:\Sthapana_DocumentStore, categorized subfolders); soft-deleted files moved to D:\Sthapana_trash
+- [x] Standard auto-generated filename: {document date}_{slugified title}_DOC{id}.{ext}; file relocates automatically if category is edited later
+- [x] Upload page: title/category/tags/date/description/file, duplicate-title warning with override, file type/size validation
+- [x] List page: text search, category/tag/date-range filters (combinable), sortable columns, pagination
+- [x] Detail page: full metadata, inline preview for PDF/image, download for other types
+- [x] Edit (metadata only, never the file) and soft-delete (Admin-only, recoverable via admin panel)
+- [x] Role-based permissions matching existing Admin/EstablishmentOfficer/Clerk/ReadOnly scheme
+- [x] Minimal automated tests
+- [ ] LLM-assisted search/auto-categorization — deferred to a later phase, once the AI/LLM layer (Phase 11) exists
 
 ## Phase 4 — Meetings Notes & Records (`apps/meetings`)
 - [ ] Meeting model: date, attendees (linked to `people`), minutes text

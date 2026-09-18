@@ -17,7 +17,9 @@
 > git add -A
 > git commit -m "Step 1.1: Employee foundation (Department, Designation, Employee CRUD, audit trail, Excel import, dashboard count)"
 ### Phase 1.2 
-> git checkout -b phase-1-step-1-2-contact-details
+> 
+#### Pahse 2
+> git checkout -b phase-2-Document-record
 
 > git add -A
 > git commit -m "Step 1.2: Contact Details (extension table, web form, Excel import)"
@@ -31,6 +33,8 @@
 
 ### Phase 7
 > git checkout -b phase-7-telegram-integration
+
+
 
 ### Important commands
 // check the exact versions installed (you'll need these for requirements/base.txt below):

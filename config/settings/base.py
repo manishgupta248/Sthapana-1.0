@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'apps.people',
     "apps.tasks",
     "apps.telegram_bot",
+    "apps.records",
 ]
 
 MIDDLEWARE = [
@@ -112,6 +113,17 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 TELEGRAM_BOT_TOKEN = env("TELEGRAM_BOT_TOKEN")
+
+DOCUMENT_STORE_ROOT = env("DOCUMENT_STORE_ROOT", default=r"D:\Sthapana_DocumentStore")
+DOCUMENT_TRASH_ROOT = env("DOCUMENT_TRASH_ROOT", default=r"D:\Sthapana_trash")
+
+# Kept outside MEDIA_ROOT/media on purpose — documents are never served as
+# public URLs; every download goes through a permission-checked view
+# (built in Step 2.4), unlike Django's default media handling.
+ALLOWED_DOCUMENT_EXTENSIONS = [
+    "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "png", "jpg", "jpeg", "txt",
+]
+MAX_DOCUMENT_UPLOAD_MB = 25
 
 # Logging configuration: writes to a file that auto-archives itself
 # once it reaches 5 MB, keeping up to 5 old copies before deleting the oldest.

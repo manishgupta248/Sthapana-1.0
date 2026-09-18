@@ -248,3 +248,44 @@ entries at the top.
   in a usage hint was misread as HTML — fixed by rewording placeholders
   and adding systematic HTML-escaping for any database-sourced text
   (task titles) inserted into bot messages.
+
+  ### Phase 2 — Office Records & Document Management — COMPLETED 2026-09-17
+- Branch: phase-2-document-management, merged to main on 2026-09-17
+- What was built: apps/records — DocumentCategory and Tag lookup
+  models; Document model (title, category, tags, document date
+  defaulting to today, description, file, auto-filled file metadata,
+  soft-delete fields) with full change history; storage kept outside
+  the project/git folder at D:\Sthapana_DocumentStore (category
+  subfolders: Notices_and_Circulars, Booklets, Financial_Records,
+  Policy_Documents, Miscellaneous) with soft-deleted files moved to
+  D:\Sthapana_trash; automatic standard filename generation
+  ({date}_{slug}_DOC{id}.{ext}), including automatic file relocation
+  if a document's category is edited later; upload page with
+  duplicate-title warning/override and file type/size validation;
+  list page with text search, category/tag/date-range filters, sortable
+  columns, and pagination; detail page with inline PDF/image preview
+  and download for other file types; metadata-only edit; Admin-only
+  soft-delete; role-based permissions via a defensive migration
+  (creates Permission rows itself rather than assuming they already
+  exist, avoiding the bug class found during the Sept 16 Contact
+  Details work).
+- Smoke test performed: Owner confirmed folder/category setup, upload
+  with correct auto-naming and physical filing, duplicate-title warning
+  and override, disallowed file type rejection, list search/filter/sort
+  in combination, detail page preview and download, metadata edit
+  including a category change correctly relocating the physical file,
+  soft-delete moving the file to trash and hiding it from the list,
+  and role-based access (ReadOnly view-only, Clerk edit-but-not-delete,
+  Admin full access) at each stage. — Result: PASS
+- Automated tests: 18 new tests (apps/records), all passing
+- Git tag: v0.5
+- Notes/deviations from original plan: Phase 2's scope was
+  substantively redefined by the owner from the original Inward/Outward
+  register concept to a general-purpose document management/archive
+  system (see Decision #37) — a bigger, more useful reinterpretation
+  rather than a deviation in the risky sense. One bug found and fixed
+  during Step 2.1: Document.file_size/file_type/original_filename were
+  marked editable=False, which silently excluded them from every form
+  including the admin, causing a NOT NULL constraint failure on save;
+  fixed by having the model populate these fields itself in save()
+  rather than relying on any form to supply them.

@@ -44,6 +44,13 @@
 | 34 | Telegram bot uses long polling, not webhooks | Dev PC has no public HTTPS endpoint; polling needs no port-forwarding or tunnel and matches the project's "no fragile infra" principle. Can be swapped for a webhook later without touching command logic |
 | 35 | Bot commands call Django models directly for now, not the (not-yet-built) REST API | Phase 6 doesn't exist yet; command functions are isolated in one file (commands.py) so refactoring onto DRF later is contained |
 | 36 | Telegram chat-ID-to-user mapping resolved (OQ-2): a TelegramUser table, managed via Django admin, not hardcoded in .env | Keeps the door open to multiple Telegram users later without a rebuild, while staying simple for the current single-user case |
+| 37 | Phase 2 redefined from an Inward/Outward register (diary number, direction, subject) to a general-purpose Document Management/Archive system covering all office file types, not just Notices & Circulars | Owner's actual, more valuable need — a proper filing/retrieval system for booklets, financial records, policy documents, and more, with LLM-assisted search planned for later |
+| 38 | Document storage lives outside the project/git folder, at D:\Sthapana_DocumentStore (soft-deleted files moved to D:\Sthapana_trash), organized into category subfolders | Keeps binary files out of git entirely (impossible to accidentally commit); mirrors how the database is already kept separate from code |
+| 39 | Documents are auto-renamed on save to a standard {document date}_{slugified title}_DOC{id}.{ext} pattern; the human-entered title/date drive the name, not a manually typed filename | Keeps files sortable and identifiable directly in Windows Explorer, guarantees uniqueness via the ID suffix, and removes any manual naming inconsistency |
+| 40 | Document categories are a managed lookup list (mirroring real folder names) rather than free text; tags are free-form but reused case-insensitively rather than pre-populated | Categories need to map 1:1 to real folders, so they stay controlled; tags benefit from being fast to add without upfront setup |
+| 41 | Document delete is soft-delete only (file moved to a trash folder, record flagged, hidden from lists); permanent erase and restore are Admin-panel-only actions | Matches the higher cost of losing an archived record vs. other data types; restore stays possible without adding a user-facing "restore" feature yet |
+| 42 | Document edits change metadata only; a corrected file replacement is handled as delete-and-reupload for now, not full version history | Owner agreed simpler approach is sufficient for now; can be revisited if version history becomes genuinely needed |
+
 ## Open questions (need owner's explicit decision)
 
 

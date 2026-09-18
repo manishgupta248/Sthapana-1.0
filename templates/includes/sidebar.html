@@ -9,6 +9,15 @@
     {% endif %}
     <a href="{% url 'telegram_bot:send_message' %}" class="sidebar-link">📨 Send Telegram Message</a>
     <a class="nav-link" href="{% url 'tasks:task_list' %}">Tasks</a>
+    
+    {% if perms.records.add_document %}
+      <a href="{% url 'records:document_upload' %}" class="sidebar-link">📁 Upload Document</a>
+    {% endif %}
+
+    {% if perms.records.view_document %}
+      <a href="{% url 'records:document_list' %}" class="sidebar-link">📄 Documents</a>
+    {% endif %}
+
     {% if user.is_staff %}
       <hr class="sidebar-divider">
       <a class="nav-link" href="/admin/">Django Admin Panel</a>
